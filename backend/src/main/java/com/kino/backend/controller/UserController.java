@@ -4,12 +4,15 @@ import com.kino.backend.model.Ticket;
 import com.kino.backend.model.User;
 import com.kino.backend.repository.UserRepository;
 import com.kino.backend.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.kino.backend.repository.TicketRepository; // <--- DODAJ
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -30,16 +33,14 @@ public class UserController {
         this.ticketRepository = ticketRepository; // <--- DODAJ
     }
 
-    // Tego ukośnika z "register" nam brakowało do szczęścia!
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public ResponseEntity<?> register(@Valid @RequestBody User user) { // <-- Dodane @Valid
         try {
-            // Ustawiamy domyślną rolę
             user.setRole("USER");
             User registeredUser = userService.registerUser(user);
             return ResponseEntity.ok(registeredUser);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("Błąd podczas rejestracji: " + e.getMessage());
         }
     }
 
@@ -56,20 +57,26 @@ public class UserController {
         return userRepository.findAll();
     }
     @PutMapping("/me")
-    public ResponseEntity<User> updateProfile(@RequestBody User updatedData, Authentication authentication) {
-        // 1. Znajdujemy zalogowanego usera
+    public ResponseEntity<?> updateProfile(@RequestBody User updatedData, Authentication authentication) {
         User currentUser = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 2. Aktualizujemy dozwolone pola (nie ruszamy ID, hasła ani roli!)
+        // BEZPIECZEŃSTWO: Sprawdzamy czy użytkownik chce zmienić email
+        if (updatedData.getEmail() != null && !updatedData.getEmail().equals(currentUser.getEmail())) {
+            // Sprawdzamy, czy nowy email nie jest zajęty przez kogoś innego
+            if (userRepository.findByEmail(updatedData.getEmail()).isPresent()) {
+                return ResponseEntity.badRequest().body("Ten adres e-mail jest już przypisany do innego konta!");
+            }
+            currentUser.setEmail(updatedData.getEmail()); // Zezwalamy na zmianę
+        }
+
+        // Aktualizujemy resztę
         currentUser.setFirstName(updatedData.getFirstName());
         currentUser.setLastName(updatedData.getLastName());
         currentUser.setPhoneNumber(updatedData.getPhoneNumber());
         currentUser.setAddress(updatedData.getAddress());
         currentUser.setDateOfBirth(updatedData.getDateOfBirth());
-        // Jeśli chcesz pozwolić na zmianę emaila, musisz tu dodać logikę sprawdzającą, czy nowy email nie jest już zajęty!
 
-        // 3. Zapisujemy i zwracamy zaktualizowanego usera
         userRepository.save(currentUser);
         return ResponseEntity.ok(currentUser);
     }
@@ -115,5 +122,16 @@ public class UserController {
         userRepository.delete(userToDelete);
 
         return ResponseEntity.ok().body("Użytkownik i wszystkie jego bilety zostały usunięte z systemu.");
+    }
+    @GetMapping("/my/history")
+    public ResponseEntity<Page<Ticket>> getMyTicketHistory(
+            Authentication authentication,
+            Pageable pageable) {
+
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Repository zajmie się resztą
+        return ResponseEntity.ok(ticketRepository.findByUserId(user.getId(), pageable));
     }
 }

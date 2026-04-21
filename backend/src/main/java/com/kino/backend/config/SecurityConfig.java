@@ -43,11 +43,14 @@ public class SecurityConfig {
 
 // Endpoint do KUPNA biletów (POST /api/tickets) z automatu łapie się w .anyRequest().authenticated(), co jest super!
 
-                        // 4. STREFA ADMINA
-                        .requestMatchers(HttpMethod.POST, "/api/movies/**", "/api/rooms/**", "/api/screenings/**").hasRole("ADMIN")
+                                // 4. STREFA ADMINA (Zaktualizowana)
+                                .requestMatchers(HttpMethod.POST, "/api/movies/**", "/api/rooms/**", "/api/screenings/**").hasRole("ADMIN")
+// NOWE: Tylko admin może pobrać listę wszystkich użytkowników i usuwać konta!
+                                .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
 
-                        // 5. CAŁA RESZTA
-                        .anyRequest().authenticated()
+// 5. CAŁA RESZTA
+                                .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
 

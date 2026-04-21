@@ -83,4 +83,5 @@ public class TicketController {
         // Używamy metody, którą dodaliśmy do repozytorium w poprzednim kroku
         return ticketRepository.findByUserId(userId);
     }
+
 }

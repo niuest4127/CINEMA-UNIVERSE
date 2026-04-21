@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next"; // 1. Dodany import
 import "./Home.css";
 import videoBg from "../assets/videoBg.webm";
 import audioIcon from "/audioIcon/icons8-audio-wave-gradient-96.png";
@@ -14,6 +15,7 @@ import videoBottom from "../assets/videoBottom.webm";
 import GlobalCinemaLoader from "../components/GlobalCinemaLoader"; 
 
 const VideoScroller = () => {
+  const { t } = useTranslation(); // 2. Inicjalizacja hooka
 
   const [movies, setMovies] = useState([]); 
   const [selectedMovieIndex, setSelectedMovieIndex] = useState(0); 
@@ -34,7 +36,7 @@ const VideoScroller = () => {
         // WYŁĄCZAMY LOADER po poprawnym pobraniu!
         // Używamy minimalnego opóźnienia (np. 500ms), by zredukować "mruganie" loadera 
         // przy bardzo szybkim internecie i upewnić się, że wideo w tle zdąży załadować klatkę.
-        setTimeout(() => setIsPageLoading(false), 1000);
+        setTimeout(() => setIsPageLoading(false), 1500);
       })
       .catch((err) => {
         console.error("Błąd pobierania filmów:", err);
@@ -63,8 +65,6 @@ const VideoScroller = () => {
   ];
 
   const rewindSpeed = 0.05;
-
-
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -160,7 +160,6 @@ const VideoScroller = () => {
     animationFrameId = requestAnimationFrame(updateVideo);
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
- 
 
 useEffect(() => {
   const section = statsRef.current;
@@ -258,12 +257,12 @@ return (
           ref={(el) => (sectionRefs.current[0] = el)} 
           className="section1"
         >
-          {/* TUTAJ WRZUCASZ CO CHCESZ */}
           <div className="sec1Container">
-            <h6> Welcome to the </h6>
-          <h1>SCR<span className="shadow">EE</span>N UNIVERSE</h1>
-          <h5>Where every scene is a masterpiece, and every moment is an unforgettable spectacle. Immerse yourself with more brightness, more color, and more contrast on the big screen.</h5>
-          <button className="glassBtn">WHAT IS SCREEN UNIVERSE</button>
+            <h6>{t('home.welcomeTo')}</h6>
+            {/* Zostawiłem logo SCREEN UNIVERSE jako brand name */}
+            <h1>SCR<span className="shadow">EE</span>N UNIVERSE</h1>
+            <h5>{t('home.sec1Subtitle')}</h5>
+            <button className="glassBtn">{t('home.whatIsBtn')}</button>
           </div>
         </div>
 
@@ -273,15 +272,15 @@ return (
           ref={(el) => (sectionRefs.current[1] = el)} 
           className="section2"
         >
-          {/* TUTAJ WRZUCASZ CO CHCESZ */}
           <div className="sec2container">
-            <h5>LIGHTS, SPEAKERS, ENGINE</h5>
-            <h1>EMBRACE AN UNFORGE<span className="shadow">TT</span>ABLE JOURNEY INTO THE UNKNOWN</h1>
+            <h5>{t('home.sec2Title')}</h5>
+            {/* Podzieliłem tekst, by zachować efekt 'shadow' */}
+            <h1>{t('home.sec2Heading_part1')}<span className="shadow">{t('home.sec2Heading_shadow')}</span>{t('home.sec2Heading_part2')}</h1>
           </div>
             <div className="sec2container flex-row">
-              <section><img src={lightIcon} alt="" /><h5>Powered by cutting-edge display technology delivering exceptional brightness, contrast, and color accuracy.</h5></section>
-              <section><img src={audioIcon} alt="" /><h5>Advanced audio systems engineered for precise, high-fidelity sound and deep spatial immersion.</h5></section>
-              <section><img src={engineIcon} alt="" /><h5>A high-performance system integrating image and sound into one seamless cinematic experience.</h5></section>
+              <section><img src={lightIcon} alt="" /><h5>{t('home.feature1')}</h5></section>
+              <section><img src={audioIcon} alt="" /><h5>{t('home.feature2')}</h5></section>
+              <section><img src={engineIcon} alt="" /><h5>{t('home.feature3')}</h5></section>
           </div>
        
         </div>
@@ -293,13 +292,13 @@ return (
           className="section3"
         >
            <div className="sec3container">
-            <h6>IMMERSE YOURSELF IN THE HEART OF THE ACTION</h6>
+            <h6>{t('home.sec3Title')}</h6>
             <div>
-              <h1>F<span className="shadow">EE</span>L EVERY SECOND</h1>
-              <h6>We've blurred the line between screen and reality. Step into a world where every scene surrounds you and every moment pulls you deeper.</h6>
+              <h1>{t('home.sec3Heading_part1')}<span className="shadow">{t('home.sec3Heading_shadow')}</span>{t('home.sec3Heading_part2')}</h1>
+              <h6>{t('home.sec3Subtitle')}</h6>
             </div>
             <div>
-              <button className="glassBtn">EXPLORE SHOWTIMES</button>
+              <button className="glassBtn">{t('home.exploreBtn')}</button>
             </div>
           </div>
          
@@ -312,18 +311,17 @@ return (
           className="section4"
         >
               <div className="sec4Container">
-            <h6> JOIN THE UNIVERSE</h6>
+            <h6> {t('home.sec4Title')}</h6>
             <div>
-          <h1>EXPERIENCE THE IMPO<span className="shadow">SS</span>IBLE - EVERY DAY</h1>
-          <h6>Join a distinguished circle of enthusiasts who refuse to settle for the ordinary. By entering the Universe Cinema community, you are not merely observing a screen; you are investing in a legacy of visual perfection and unrivaled sensory depth.</h6>
+          <h1>{t('home.sec4Heading_part1')}<span className="shadow">{t('home.sec4Heading_shadow')}</span>{t('home.sec4Heading_part2')}</h1>
+          <h6>{t('home.sec4Subtitle')}</h6>
           </div>
-          <button className="glassBtn">Register</button>
+          <button className="glassBtn">{t('home.registerBtn')}</button>
           </div>
         </div>
 
       </div>
 
-      {/* SEKCJA 5 - DALSZA CZĘŚĆ STRONY (bez wideo) */}
     {/* SEKCJA 5 - NAJNOWSZE PREMIERY */}
       <div 
         data-index={4} 
@@ -332,10 +330,9 @@ return (
       >
      
            <h1>
-            THE HO<span className="shadow">TT</span>EST WORLD PREMIERES
+           {t('home.sec5Heading_part1')}<span className="shadow">{t('home.sec5Heading_shadow')}</span>{t('home.sec5Heading_part2')}
           </h1>
           
-          {/* Przyciski z nazwami filmów wygenerowane pętlą z bazy! */}
           <div className="movie-buttons" >
             {movies.map((movie, index) => (
               <button 
@@ -356,27 +353,23 @@ return (
               <div className="left" >
                 <h2 >{movies[selectedMovieIndex].title}</h2>
                 <h6 >
-                   Run Time: {movies[selectedMovieIndex].durationMin} min
+                   {t('home.runTime')} {movies[selectedMovieIndex].durationMin} min
                 </h6>
                 <p >{movies[selectedMovieIndex].shortDescription}</p>
-                <p><strong>Director:</strong> {movies[selectedMovieIndex].director}</p>
-                <p><strong>Cast:</strong> {movies[selectedMovieIndex].mainCast}</p>
-                <p><strong>Release Date: </strong>{movies[selectedMovieIndex].releaseDate} </p>
-                <p><strong>Age:</strong> {movies[selectedMovieIndex].minimumAge}+</p>
-                <p><strong>Generes:</strong> {movies[selectedMovieIndex].genres} </p>
+                <p><strong>{t('home.director')}</strong> {movies[selectedMovieIndex].director}</p>
+                <p><strong>{t('home.cast')}</strong> {movies[selectedMovieIndex].mainCast}</p>
+                <p><strong>{t('home.releaseDate')} </strong>{movies[selectedMovieIndex].releaseDate} </p>
+                <p><strong>{t('home.age')}</strong> {movies[selectedMovieIndex].minimumAge}+</p>
+                <p><strong>{t('home.genres')}</strong> {movies[selectedMovieIndex].genres} </p>
                 
                 {/* Opcjonalny przycisk do przejścia do Repertuaru */}
-                <button className="glassBtn">Buy ticket</button>
+                <button className="glassBtn">{t('home.buyTicketBtn')}</button>
               </div>
 
               {/* PRAWA STRONA: Plakat */}
               <div className="right">
-                {/* Na ten moment używamy sztucznego tła jako plakatu, dopóki nie dodamy wgrywania plików */}
-               
                   <img src={movies[selectedMovieIndex].posterUrl} alt="" />
                   <div className="blurBg"><img src={movies[selectedMovieIndex].posterUrl} alt="" /></div>
-                  
-                
               </div>
 
             </div>
@@ -397,7 +390,7 @@ return (
     <source src={videoBottom} type="video/mp4" />
   </video>
            <div ref={statsRef} className="statsSection">
-              <h1>Trusted by movie lovers worldwide</h1>
+              <h1>{t('home.statsTitle')}</h1>
 
               <div className="statsGrid">
                 
@@ -407,9 +400,9 @@ return (
                   </div>
                   <div className="right">
                     <div className="statTop">
-                    <span className="number" data-target="5">1</span>/5 Google Reveiews
+                    <span className="number" data-target="5">1</span>{t('home.googleReviews')}
                   </div>
-                  <p>reflects our commitment to delivering exceptional visual quality, immersive sound, and a truly next-generation cinematic experience.</p>
+                  <p>{t('home.stat1Desc')}</p>
                 </div>
 
                   </div>
@@ -421,9 +414,9 @@ return (
                     </div>
                     <div className="right">
                            <div className="statTop">
-              <span className="number" data-target="12000">0</span> + visitors
+              <span className="number" data-target="12000">0</span> {t('home.visitors')}
                   </div>
-                  <p> monthly choose our cinema for cutting-edge technology, premium comfort, and a more immersive way to experience film.</p>
+                  <p>{t('home.stat2Desc')}</p>
                     </div>
       
                 </div>
@@ -435,9 +428,9 @@ return (
                     </div>
                     <div className="right">
                                         <div className="statTop">
-                            <span className="number" data-target="350">0</span> + screenings
+                            <span className="number" data-target="350">0</span> {t('home.screenings')}
                       </div>
-                  <p>every month bring you the latest premieres and unforgettable productions in outstanding audiovisual quality.</p>
+                  <p>{t('home.stat3Desc')}</p>
                     </div>
                    
                 </div>
@@ -446,7 +439,7 @@ return (
         </div>
           <Footer></Footer>
         </div>
-     
+      
 
       
     </div>

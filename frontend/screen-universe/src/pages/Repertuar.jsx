@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // 1. Dodany import
 import MovieCardSkeleton from '../components/MovieCardSkeleton';
 import './Repertuar.css';
 
 const API_URL = 'http://localhost:8080';
+
 const LazyPoster = ({ src, alt, onClick }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -38,9 +40,11 @@ const LazyPoster = ({ src, alt, onClick }) => {
     </div>
   );
 };
+
 const Repertuar = () => {
   const MOCK_TODAY = new Date('2026-04-01T10:00:00');
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation(); // 2. Wywołanie funkcji (oraz i18n do locale)
 
   const [screenings, setScreenings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,6 +53,9 @@ const Repertuar = () => {
   const [selectedDate, setSelectedDate] = useState(
     MOCK_TODAY.toISOString().split('T')[0]
   );
+
+  // Dynamiczny język do wyświetlania dat
+  const currentLocale = i18n.language === 'pl' ? 'pl-PL' : 'en-US';
 
   // 🔥 FETCH + LOADING FIX
   useEffect(() => {
@@ -74,11 +81,11 @@ const Repertuar = () => {
 
       days.push({
         fullDate: nextDate.toISOString().split('T')[0],
-        displayDate: nextDate.toLocaleDateString('pl-PL', {
+        displayDate: nextDate.toLocaleDateString(currentLocale, {
           day: '2-digit',
           month: '2-digit'
         }),
-        dayName: nextDate.toLocaleDateString('pl-PL', {
+        dayName: nextDate.toLocaleDateString(currentLocale, {
           weekday: 'short'
         })
       });
@@ -114,7 +121,7 @@ const Repertuar = () => {
 
     acc[movieId].times.push(screening);
 
-    return acc;
+   return acc;
   }, {});
 
   const movieList = Object.values(groupedByMovie);
@@ -122,13 +129,14 @@ const Repertuar = () => {
   return (
     <div className="repertuar-container">
 
-      <h1 className="page-title">SHOWTIMES</h1>
+      {/* 3. Podmiana napisów */}
+      <h1 className="page-title">{t('repertoire.title')}</h1>
 
       {/* 🔍 SEARCH */}
       <div className="search-bar-wrapper">
         <input
           type="text"
-          placeholder="Search for a movie..."
+          placeholder={t('repertoire.searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="search-input"
@@ -161,7 +169,7 @@ const Repertuar = () => {
           ))
         ) : movieList.length === 0 ? (
           <h3 className="no-screenings">
-            No screenings found for this day.
+            {t('repertoire.noScreenings')}
           </h3>
         ) : (
           movieList.map(({ movie, times }) => (
@@ -187,9 +195,9 @@ const Repertuar = () => {
                 </p>
 
                 <div className="movie-meta-info">
-                  <span><strong>Cast:</strong> {movie.mainCast}</span>
-                  <span><strong>Duration:</strong> {movie.durationMin} min</span>
-                  <span><strong>Age:</strong> {movie.minimumAge}+</span>
+                  <span><strong>{t('repertoire.cast')}</strong> {movie.mainCast}</span>
+                  <span><strong>{t('repertoire.duration')}</strong> {movie.durationMin} min</span>
+                  <span><strong>{t('repertoire.age')}</strong> {movie.minimumAge}+</span>
                 </div>
 
                 <hr className="divider" />
@@ -204,7 +212,7 @@ const Repertuar = () => {
                     >
                       <div className="time-text">
                         {new Date(screening.startTime).toLocaleTimeString(
-                          'en-US',
+                          currentLocale,
                           {
                             hour: '2-digit',
                             minute: '2-digit',

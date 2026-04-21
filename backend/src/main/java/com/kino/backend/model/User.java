@@ -1,5 +1,7 @@
 package com.kino.backend.model;
-
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
@@ -11,10 +13,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Email nie może być pusty")
+    @Email(message = "Podaj poprawny format adresu email")
     @Column(unique = true)
     private String email;
 
-    // Hasło można zapisać (wysyłając z Reacta), ale nie można go odczytać (wysyłając do Reacta)
+    @NotBlank(message = "Hasło nie może być puste")
+    @Size(min = 6, message = "Hasło musi mieć co najmniej 6 znaków")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 

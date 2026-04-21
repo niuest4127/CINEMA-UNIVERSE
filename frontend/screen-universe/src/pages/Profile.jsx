@@ -1,18 +1,23 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // 1. Dodany import
 import './Profile.css';
 
 const API_URL = 'http://localhost:8080';
 
 const Profile = () => {
-  // POBIERAMY LOGOUT Z KONTEKSTU
   const { user, login, logout, loading: authLoading } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation(); // 2. Wywołanie funkcji
 
   const [activeTab, setActiveTab] = useState('active');
   const [tickets, setTickets] = useState([]);
   const [ticketsLoading, setTicketsLoading] = useState(true);
+
+  // --- STANY DO STRONICOWANIA ---
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   const [profileData, setProfileData] = useState({
     firstName: '', lastName: '', phoneNumber: '', address: '', dateOfBirth: ''
@@ -21,6 +26,9 @@ const Profile = () => {
   const [message, setMessage] = useState({ text: '', type: '' });
 
   const MOCK_TODAY = new Date('2026-04-01T11:50:00');
+  
+  // Dynamiczny locale dla formatowania dat
+  const currentLocale = i18n.language === 'pl' ? 'pl-PL' : 'en-US';
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -28,7 +36,7 @@ const Profile = () => {
       return;
     }
     if (user) {
-      fetchTickets();
+      fetchTickets(0); // Domyślnie ładujemy stronę 0
     }
   }, [user, authLoading, navigate]);
 
@@ -42,15 +50,23 @@ const Profile = () => {
     }
   }, [user]);
 
-  const fetchTickets = async () => {
+  // --- POPRAWIONE POBIERANIE Z PAGINACJĄ (max 10 na stronę) ---
+  const fetchTickets = async (page = 0) => {
     try {
-      const res = await fetch(`${API_URL}/api/tickets/my`, {
+      const res = await fetch(`${API_URL}/api/users/my/history?page=${page}&size=10`, {
         headers: { Authorization: user.token }
       });
-      if (!res.ok) throw new Error("Failed to fetch tickets");
-      setTickets(await res.json());
+      if (!res.ok) throw new Error(t('profile.fetchError'));
+      
+      const data = await res.json();
+      
+      // Zabezpieczenie: jeśli data.content nie istnieje, wstaw pustą tablicę
+      setTickets(data.content || []); 
+      setTotalPages(data.totalPages || 0);
+      setCurrentPage(data.number || 0);
     } catch (err) {
       console.error(err);
+      setTickets([]); // W razie błędu chronimy aplikację przed crashem
     } finally {
       setTicketsLoading(false);
     }
@@ -62,7 +78,7 @@ const Profile = () => {
         method: 'GET',
         headers: { 'Authorization': user.token }
       });
-      if (!res.ok) throw new Error("Wystąpił błąd podczas pobierania biletu.");
+      if (!res.ok) throw new Error(t('profile.downloadError'));
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -76,15 +92,15 @@ const Profile = () => {
   };
 
   const handleReturnTicket = async (ticketId) => {
-    if (!window.confirm("Cancel ticket?")) return;
+    if (!window.confirm(t('profile.cancelConfirm'))) return;
     try {
       const res = await fetch(`${API_URL}/api/tickets/${ticketId}/return`, {
         method: 'PUT',
         headers: { Authorization: user.token }
       });
-      if (!res.ok) throw new Error("Failed to cancel");
-      alert("Cancelled");
-      fetchTickets();
+      if (!res.ok) throw new Error(t('profile.cancelError'));
+      alert(t('profile.cancelledMsg'));
+      fetchTickets(currentPage); // Po usunięciu zostajemy na tej samej stronie!
     } catch (err) { alert(err.message); }
   };
 
@@ -96,10 +112,10 @@ const Profile = () => {
         headers: { 'Content-Type': 'application/json', Authorization: user.token },
         body: JSON.stringify(profileData)
       });
-      if (!res.ok) throw new Error("Update failed");
+      if (!res.ok) throw new Error(t('profile.updateError'));
       const updatedUser = await res.json();
       login({ ...updatedUser, token: user.token });
-      setMessage({ text: 'Profile updated!', type: 'success' });
+      setMessage({ text: t('profile.profileUpdated'), type: 'success' });
     } catch (err) { setMessage({ text: err.message, type: 'error' }); }
   };
 
@@ -111,57 +127,81 @@ const Profile = () => {
         headers: { 'Content-Type': 'application/json', Authorization: user.token },
         body: JSON.stringify(passwords)
       });
-      if (!res.ok) throw new Error("Password change failed");
-      setMessage({ text: 'Password updated!', type: 'success' });
+      if (!res.ok) throw new Error(t('profile.passChangeError'));
+      setMessage({ text: t('profile.passUpdated'), type: 'success' });
       setPasswords({ oldPassword: '', newPassword: '' });
     } catch (err) { setMessage({ text: err.message, type: 'error' }); }
   };
 
-  // --- NOWA FUNKCJA WYLOGOWANIA ---
   const handleLogout = () => {
     logout();
-    navigate('/'); // Po wylogowaniu wyrzucamy od razu na stronę główną
+    navigate('/'); 
   };
 
-  if (authLoading) return <div>Synchronizing session...</div>;
-  
-  // 🔥 KLUCZOWY FIX: Jeśli user to null, przestajemy cokolwiek renderować (zapobiega crashom!)
+  if (authLoading) return <div>{t('profile.sync')}</div>;
   if (!user) return null; 
+  if (ticketsLoading) return <h2 style={{padding: '100px', color: 'white'}}>{t('profile.loading')}</h2>;
 
-  if (ticketsLoading) return <h2>Loading profile...</h2>;
+  // --- BEZPIECZNE FILTROWANIE ---
+  const safeTickets = Array.isArray(tickets) ? tickets : [];
+  const activeTickets = safeTickets.filter(t => t.status === 'AKTYWNY' && new Date(t.screening.startTime) > MOCK_TODAY);
+  const historyTickets = safeTickets.filter(t => t.status === 'ANULOWANY' || new Date(t.screening.startTime) <= MOCK_TODAY);
 
-  const activeTickets = tickets.filter(t => t.status === 'AKTYWNY' && new Date(t.screening.startTime) > MOCK_TODAY);
-  const historyTickets = tickets.filter(t => t.status === 'ANULOWANY' || new Date(t.screening.startTime) <= MOCK_TODAY);
+  // Komponent nawigacji stron (Przyciski Poprzednia/Następna)
+  const PaginationControls = () => {
+    if (totalPages <= 1) return null; // Ukrywamy, jeśli jest tylko 1 strona
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', marginTop: '30px' }}>
+        <button 
+          className="save-btn" 
+          style={{ width: 'auto', padding: '10px 20px', opacity: currentPage === 0 ? 0.5 : 1 }}
+          disabled={currentPage === 0} 
+          onClick={() => fetchTickets(currentPage - 1)}
+        >
+          {t('profile.prev')}
+        </button>
+        <span style={{ color: '#aaa', fontWeight: 'bold' }}>
+          {t('profile.page')} {currentPage + 1} {t('profile.of')} {totalPages}
+        </span>
+        <button 
+          className="save-btn" 
+          style={{ width: 'auto', padding: '10px 20px', opacity: currentPage >= totalPages - 1 ? 0.5 : 1 }}
+          disabled={currentPage >= totalPages - 1} 
+          onClick={() => fetchTickets(currentPage + 1)}
+        >
+          {t('profile.next')}
+        </button>
+      </div>
+    );
+  };
 
   return (
-<div className="profile-container">
+    <div className="profile-container">
       <div className="profile-sidebar glass-panel">
         <div className="sidebar-header">
-          <h2>{user.firstName || 'Cinema'} {user.lastName || 'Fan'}</h2>
+          <h2>{user.firstName || t('profile.defaultFirstName')} {user.lastName || t('profile.defaultLastName')}</h2>
           <p>{user.email}</p>
         </div>
         
         <ul className="sidebar-menu">
-          <li className={activeTab === 'active' ? 'active' : ''} onClick={() => {setActiveTab('active'); setMessage({text: ''})}}>Active Tickets</li>
-          <li className={activeTab === 'history' ? 'active' : ''} onClick={() => {setActiveTab('history'); setMessage({text: ''})}}>Ticket History</li>
-          <li className={activeTab === 'settings' ? 'active' : ''} onClick={() => {setActiveTab('settings'); setMessage({text: ''})}}>Account Settings</li>
+          <li className={activeTab === 'active' ? 'active' : ''} onClick={() => {setActiveTab('active'); setMessage({text: ''})}}>{t('profile.activeTab')}</li>
+          <li className={activeTab === 'history' ? 'active' : ''} onClick={() => {setActiveTab('history'); setMessage({text: ''})}}>{t('profile.historyTab')}</li>
+          <li className={activeTab === 'settings' ? 'active' : ''} onClick={() => {setActiveTab('settings'); setMessage({text: ''})}}>{t('profile.settingsTab')}</li>
           
-          {/* NOWY PRZYCISK WYLOGOWANIA */}
           <li onClick={handleLogout} style={{ color: '#ff4d4d', marginTop: '20px', borderTop: '1px solid #333', paddingTop: '15px' }}>
-            Logout
+            {/* Tutaj możemy użyć klucza z navbar.logout lub profile.logoutBtn */}
+            {t('navbar.logout')}
           </li>
         </ul>
       </div>
 
-      {/* PRAWA STRONA: ZAWARTOŚĆ ZAKŁADKI */}
       <div className="profile-content glass-panel">
         
-        {/* ZAKŁADKA 1: AKTYWNE BILETY */}
         {activeTab === 'active' && (
           <div className="tab-section">
-            <h2 className="tab-title">Your Upcoming Movies</h2>
+            <h2 className="tab-title">{t('profile.upcomingMovies')}</h2>
             {activeTickets.length === 0 ? (
-              <p className="empty-state">You have no active tickets. Time to book a movie!</p>
+              <p className="empty-state">{t('profile.noActiveTickets')}</p>
             ) : (
               <div className="tickets-list">
                 {activeTickets.map(ticket => (
@@ -170,45 +210,38 @@ const Profile = () => {
                     <div className="ticket-info">
                       <h3>{ticket.screening.movie.title}</h3>
                       <p className="ticket-date">
-                        {new Date(ticket.screening.startTime).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at {new Date(ticket.screening.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                        {new Date(ticket.screening.startTime).toLocaleDateString(currentLocale, { weekday: 'short', month: 'short', day: 'numeric' })} {t('profile.atTime')} {new Date(ticket.screening.startTime).toLocaleTimeString(currentLocale, { hour: '2-digit', minute: '2-digit', hour12: false })}
                       </p>
-                      <p>Room: <strong>{ticket.screening.room.name}</strong></p>
-                      <p>Seat: <strong className="ticket-seat">{ticket.seatNumber}</strong></p>
+                      <p>{t('profile.room')}: <strong>{ticket.screening.room.name}</strong></p>
+                      <p>{t('profile.seat')}: <strong className="ticket-seat">{ticket.seatNumber}</strong></p>
                     </div>
                     <div className="ticket-actions">
-                      {/* Sprawdzamy, czy czas "zamrożony" jest późniejszy niż czas seansu minus 30 minut */}
                       {MOCK_TODAY > new Date(new Date(ticket.screening.startTime).getTime() - 30 * 60000) ? (
                         <span className="non-refundable-text">
-                          Non-refundable (starts soon)
+                          {t('profile.nonRefundable')}
                         </span>
                       ) : (
-                        <>
-                        
                         <button className="cancel-ticket-btn" onClick={() => handleReturnTicket(ticket.id)}>
-                          Cancel Ticket
+                          {t('profile.cancelBtn')}
                         </button>
-                        </>
                       )}
-
                       <button className="download-btn cancel-ticket-btn" onClick={() => handleDownloadPdf(ticket.id)}>
-                          Download PDF
+                          {t('profile.downloadBtn')}
                       </button>
-
-
                     </div>
                   </div>
                 ))}
               </div>
             )}
+            <PaginationControls />
           </div>
         )}
 
-        {/* ZAKŁADKA 2: HISTORIA */}
         {activeTab === 'history' && (
           <div className="tab-section">
-            <h2 className="tab-title">Your Ticket History</h2>
+            <h2 className="tab-title">{t('profile.ticketHistory')}</h2>
             {historyTickets.length === 0 ? (
-              <p className="empty-state">Your history is empty.</p>
+              <p className="empty-state">{t('profile.noHistory')}</p>
             ) : (
               <div className="tickets-list">
                 {historyTickets.map(ticket => (
@@ -217,70 +250,66 @@ const Profile = () => {
                     <div className="ticket-info">
                       <h3>{ticket.screening.movie.title}</h3>
                       <p className="ticket-date">
-                        {new Date(ticket.screening.startTime).toLocaleDateString('en-US')}
+                        {new Date(ticket.screening.startTime).toLocaleDateString(currentLocale)}
                       </p>
                       <span className={`status-badge ${ticket.status === 'ANULOWANY' ? 'red-badge' : 'gray-badge'}`}>
-                        {ticket.status === 'ANULOWANY' ? 'CANCELLED' : 'COMPLETED'}
+                        {ticket.status === 'ANULOWANY' ? t('profile.statusCancelled') : t('profile.statusCompleted')}
                       </span>
                     </div>
                   </div>
                 ))}
               </div>
             )}
+            <PaginationControls />
           </div>
         )}
 
-        {/* ZAKŁADKA 3: USTAWIENIA KONTA */}
         {activeTab === 'settings' && (
           <div className="tab-section">
-            <h2 className="tab-title">Account Settings</h2>
+            <h2 className="tab-title">{t('profile.accountSettings')}</h2>
             
             {message.text && (
               <div className={`profile-message ${message.type}`}>{message.text}</div>
             )}
 
             <div className="settings-grid">
-              
-              {/* FORMULARZ DANYCH */}
               <form className="settings-form" onSubmit={handleProfileUpdate}>
-                <h3>Personal Information</h3>
+                <h3>{t('profile.personalInfo')}</h3>
                 <div className="input-group">
-                  <label>First Name</label>
+                  <label>{t('profile.firstName')}</label>
                   <input type="text" value={profileData.firstName} onChange={e => setProfileData({...profileData, firstName: e.target.value})} />
                 </div>
                 <div className="input-group">
-                  <label>Last Name</label>
+                  <label>{t('profile.lastName')}</label>
                   <input type="text" value={profileData.lastName} onChange={e => setProfileData({...profileData, lastName: e.target.value})} />
                 </div>
                 <div className="input-group">
-                  <label>Phone Number</label>
+                  <label>{t('profile.phoneNum')}</label>
                   <input type="tel" value={profileData.phoneNumber} onChange={e => setProfileData({...profileData, phoneNumber: e.target.value})} />
                 </div>
                 <div className="input-group">
-                  <label>Address</label>
+                  <label>{t('profile.address')}</label>
                   <input type="text" value={profileData.address} onChange={e => setProfileData({...profileData, address: e.target.value})} />
                 </div>
                 <div className="input-group">
-                  <label>Date of Birth</label>
+                  <label>{t('profile.dob')}</label>
                   <input type="date" value={profileData.dateOfBirth} onChange={e => setProfileData({...profileData, dateOfBirth: e.target.value})} />
                 </div>
-                <button type="submit" className="save-btn">SAVE CHANGES</button>
+                <button type="submit" className="save-btn">{t('profile.saveChanges')}</button>
               </form>
 
-              {/* FORMULARZ HASŁA */}
               <form className="settings-form password-form" onSubmit={handlePasswordChange}>
-                <h3>Change Password</h3>
+                <h3>{t('profile.changePass')}</h3>
                 <div className="input-group">
-                  <label>Current Password</label>
+                  <label>{t('profile.currPass')}</label>
                   <input type="password" required value={passwords.oldPassword} onChange={e => setPasswords({...passwords, oldPassword: e.target.value})} />
                 </div>
                 <div className="input-group">
-                  <label>New Password</label>
+                  <label>{t('profile.newPass')}</label>
                   <input type="password" required value={passwords.newPassword} onChange={e => setPasswords({...passwords, newPassword: e.target.value})} />
                 </div>
-                <button type="submit" className="save-btn danger-btn">UPDATE PASSWORD</button>
+                <button type="submit" className="save-btn danger-btn">{t('profile.updatePass')}</button>
               </form>
-
             </div>
           </div>
         )}

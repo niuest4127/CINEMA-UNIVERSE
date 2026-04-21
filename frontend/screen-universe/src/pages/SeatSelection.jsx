@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next'; // 1. Dodany import
 import './SeatSelection.css';
 
 const SeatSelection = () => {
@@ -8,6 +9,7 @@ const SeatSelection = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useContext(AuthContext);
+  const { t, i18n } = useTranslation(); // 2. Wywołanie funkcji
 
   const [screening, setScreening] = useState(null);
   const [selectedSeats, setSelectedSeats] = useState([]); 
@@ -17,6 +19,9 @@ const SeatSelection = () => {
   // --- NOWE STANY DO PŁATNOŚCI ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState('idle'); // 'idle' | 'processing' | 'success'
+
+  // Dynamiczny język do wyświetlania dat
+  const currentLocale = i18n.language === 'pl' ? 'pl-PL' : 'en-US';
 
   useEffect(() => {
     // KROK 1: Sprawdzamy, czy wracamy z logowania i czy mieliśmy wybrane miejsca
@@ -59,7 +64,7 @@ const SeatSelection = () => {
       if (selectedSeats.length < 10) {
         setSelectedSeats([...selectedSeats, seatLabel]);
       } else {
-        alert("You can only select up to 10 seats at once!");
+        alert(t('seatSelection.maxSeatsAlert'));
       }
     }
   };
@@ -98,7 +103,7 @@ const SeatSelection = () => {
             seatNumber: seatLabel
           })
         }).then(res => {
-          if (!res.ok) throw new Error(`Seat ${seatLabel} was just taken by someone else!`);
+          if (!res.ok) throw new Error(`${seatLabel} - ${t('seatSelection.seatTakenAlert')}`);
           return res.json();
         });
       });
@@ -128,8 +133,8 @@ const SeatSelection = () => {
     }
   };
 
-  if (loading) return <h2 className="loading-msg">Loading cinema room...</h2>;
-  if (!screening) return <h2 className="loading-msg">Screening not found!</h2>;
+  if (loading) return <h2 className="loading-msg">{t('seatSelection.loadingRoom')}</h2>;
+  if (!screening) return <h2 className="loading-msg">{t('seatSelection.notFound')}</h2>;
 
   const totalSeats = screening.room.totalSeats;
   const seatsArray = Array.from({ length: totalSeats }, (_, i) => i + 1);
@@ -139,13 +144,13 @@ const SeatSelection = () => {
     <div className="seat-selection-container">
       
       <div className="seat-header">
-        <button onClick={() => navigate(-1)} className="back-btn">← Back to Movie Details</button>
+        <button onClick={() => navigate(-1)} className="back-btn">{t('seatSelection.backToMovie')}</button>
         <div className="screening-summary">
           <h1 className="movie-title-small">{screening.movie.title}</h1>
           <p className="screening-meta">
-            <span>{new Date(screening.startTime).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+            <span>{new Date(screening.startTime).toLocaleDateString(currentLocale, { weekday: 'long', month: 'long', day: 'numeric' })}</span>
             <span className="time-highlight">
-              {new Date(screening.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
+              {new Date(screening.startTime).toLocaleTimeString(currentLocale, { hour: '2-digit', minute: '2-digit', hour12: false })}
             </span>
             <span>| {screening.room.name}</span>
           </p>
@@ -155,7 +160,7 @@ const SeatSelection = () => {
       <div className="room-layout">
         <div className="screen-container">
           <div className="screen"></div>
-          <p className="screen-text">SCREEN</p>
+          <p className="screen-text">{t('seatSelection.screen')}</p>
         </div>
 
         <div className="seats-grid">
@@ -181,20 +186,20 @@ const SeatSelection = () => {
         </div>
 
         <div className="seat-legend">
-          <div className="legend-item"><div className="seat available"></div> <span>Available</span></div>
-          <div className="legend-item"><div className="seat selected"></div> <span>Selected</span></div>
-          <div className="legend-item"><div className="seat occupied"></div> <span>Occupied</span></div>
+          <div className="legend-item"><div className="seat available"></div> <span>{t('seatSelection.available')}</span></div>
+          <div className="legend-item"><div className="seat selected"></div> <span>{t('seatSelection.selected')}</span></div>
+          <div className="legend-item"><div className="seat occupied"></div> <span>{t('seatSelection.occupied')}</span></div>
         </div>
       </div>
 
       {selectedSeats.length > 0 && (
         <div className="booking-footer glass-panel">
           <div className="booking-info">
-            <h3>Selected Seats: <span style={{ color: 'rgb(0, 201, 27)' }}>{selectedSeats.join(', ')}</span></h3>
-            <p>Total: <strong style={{ color: 'white', fontSize: '20px' }}>PLN {totalPrice}</strong></p>
+            <h3>{t('seatSelection.selectedSeatsMsg')} <span style={{ color: 'rgb(0, 201, 27)' }}>{selectedSeats.join(', ')}</span></h3>
+            <p>{t('seatSelection.total')} <strong style={{ color: 'white', fontSize: '20px' }}>PLN {totalPrice}</strong></p>
           </div>
           <button className="glassBtn small-cyber" onClick={handleOpenSummary}>
-            BUY TICKETS
+            {t('seatSelection.buyTickets')}
           </button>
         </div>
       )}
@@ -206,17 +211,17 @@ const SeatSelection = () => {
             
             {paymentStatus === 'idle' && (
               <>
-                <h2>Checkout Summary</h2>
+                <h2>{t('seatSelection.checkoutSummary')}</h2>
                 <div className="summary-details">
-                  <p><strong>Movie:</strong> {screening.movie.title}</p>
-                  <p><strong>Date:</strong> {new Date(screening.startTime).toLocaleDateString()}</p>
-                  <p><strong>Seats:</strong> {selectedSeats.join(', ')}</p>
+                  <p><strong>{t('seatSelection.movie')}:</strong> {screening.movie.title}</p>
+                  <p><strong>{t('seatSelection.date')}:</strong> {new Date(screening.startTime).toLocaleDateString(currentLocale)}</p>
+                  <p><strong>{t('seatSelection.seats')}:</strong> {selectedSeats.join(', ')}</p>
                   <hr style={{ borderColor: '#333', margin: '15px 0' }}/>
-                  <h3>Total to pay: <span style={{ color: 'rgb(0, 201, 27)' }}>{totalPrice}PLN </span></h3>
+                  <h3>{t('seatSelection.totalToPay')}: <span style={{ color: 'rgb(0, 201, 27)' }}>{totalPrice} PLN </span></h3>
                 </div>
                 <div className="modal-actions">
-                  <button className="cancel-btn" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                  <button className="pay-btn" onClick={confirmPayment}>PAY NOW</button>
+                  <button className="cancel-btn" onClick={() => setIsModalOpen(false)}>{t('seatSelection.cancelTx')}</button>
+                  <button className="pay-btn" onClick={confirmPayment}>{t('seatSelection.payNow')}</button>
                 </div>
               </>
             )}
@@ -224,16 +229,16 @@ const SeatSelection = () => {
             {paymentStatus === 'processing' && (
               <div className="processing-state">
                 <div className="spinner"></div>
-                <h3>Processing Payment...</h3>
-                <p>Please do not close this window.</p>
+                <h3>{t('seatSelection.processing')}</h3>
+                <p>{t('seatSelection.doNotClose')}</p>
               </div>
             )}
 
             {paymentStatus === 'success' && (
               <div className="success-state">
                 <div className="checkmark">✔</div>
-                <h2 style={{ color: '#4dff4d' }}>Payment Successful!</h2>
-                <p>Your tickets have been sent to your email.</p>
+                <h2 style={{ color: '#4dff4d' }}>{t('seatSelection.success')}</h2>
+                <p>{t('seatSelection.emailSent')}</p>
               </div>
             )}
 

@@ -110,7 +110,7 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.poster-side {
+.repertoire-card .poster-side {
 overflow: hidden;
 width: 30%;
   margin-right: 30px;
@@ -119,7 +119,7 @@ width: 30%;
     align-items: center;
 }
 
-.poster-side img {
+.repertoire-card .poster-side img {
  width: 100%;
    cursor: pointer;
   border-radius: 10px;

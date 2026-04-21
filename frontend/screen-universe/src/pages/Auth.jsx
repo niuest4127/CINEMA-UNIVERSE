@@ -1,12 +1,15 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import './Auth.css'; // Podepniemy zaraz style!
+import { useTranslation } from 'react-i18next'; // 1. Dodany import
+import './Auth.css'; 
 
 const Auth = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-const location = useLocation();
+  const location = useLocation();
+  const { t } = useTranslation(); // 2. Wywołanie funkcji
+
   // Stan formularza
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [formData, setFormData] = useState({
@@ -16,7 +19,8 @@ const location = useLocation();
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-const fromPath = location.state?.from || '/repertuar';
+  const fromPath = location.state?.from || '/repertuar';
+
   // Obsługa wpisywania tekstu w inputy
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,11 +35,8 @@ const fromPath = location.state?.from || '/repertuar';
     try {
       if (isLoginMode) {
         // --- LOGIKA LOGOWANIA (Basic Auth) ---
-        // Tworzymy token Basic Auth (wymaga tego Spring Security)
         const basicAuthToken = 'Basic ' + btoa(formData.email + ':' + formData.password);
 
-        // Wysyłamy testowe zapytanie do backendu, żeby sprawdzić, czy hasło jest poprawne
-        // (W następnym kroku zrobimy do tego specjalny endpoint w Javie!)
         const response = await fetch('http://localhost:8080/api/users/login', {
           method: 'POST',
           headers: {
@@ -43,11 +44,10 @@ const fromPath = location.state?.from || '/repertuar';
           }
         });
 
-        if (!response.ok) throw new Error('Invalid email or password');
+        if (!response.ok) throw new Error(t('auth.invalidCredentials', 'Invalid email or password'));
         
         const userData = await response.json();
         
-        // Zapisujemy użytkownika i jego token w naszym AuthContext
         login({ ...userData, token: basicAuthToken });
         navigate(fromPath);
 
@@ -63,11 +63,10 @@ const fromPath = location.state?.from || '/repertuar';
           })
         });
 
-        if (!response.ok) throw new Error('Registration failed. Email might be in use.');
+        if (!response.ok) throw new Error(t('auth.registrationFailed', 'Registration failed. Email might be in use.'));
         
-        // Po udanej rejestracji, przełączamy na logowanie i czyścimy błędy
         setIsLoginMode(true);
-        setError('Registration successful! Please log in.');
+        setError(t('auth.registrationSuccess', 'Registration successful! Please log in.'));
       }
     } catch (err) {
       setError(err.message);
@@ -80,21 +79,20 @@ const fromPath = location.state?.from || '/repertuar';
     <div className="auth-container">
       <div className="auth-card glass-panel">
         <h2 className="auth-title">
-          {isLoginMode ? 'ACCESS YOUR ACCOUNT' : 'JOIN THE UNIVERSE'}
+          {/* 3. Podmiana napisów */}
+          {isLoginMode ? t('auth.loginTitle') : t('auth.registerTitle')}
         </h2>
         
         {error && (
-          <div className={`auth-message ${error.includes('successful') ? 'success' : 'error'}`}>
+          <div className={`auth-message ${error.includes(t('auth.registrationSuccess', 'successful')) ? 'success' : 'error'}`}>
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="auth-form">
-          {/* Pole Username pokazujemy tylko przy rejestracji */}
-
 
           <div className="input-group">
-            <label>Email Address</label>
+            <label>{t('auth.email')}</label>
             <input 
               type="email" 
               name="email" 
@@ -105,9 +103,9 @@ const fromPath = location.state?.from || '/repertuar';
             />
           </div>
 
-                 {!isLoginMode && (
+          {!isLoginMode && (
             <div className="input-group">
-              <label>Phone Number</label>
+              <label>{t('auth.phoneNumber')}</label>
               <input 
                 type="tel" 
                 name="phoneNumber" 
@@ -120,7 +118,7 @@ const fromPath = location.state?.from || '/repertuar';
           )}
 
           <div className="input-group">
-            <label>Password</label>
+            <label>{t('auth.password')}</label>
             <input 
               type="password" 
               name="password" 
@@ -132,15 +130,15 @@ const fromPath = location.state?.from || '/repertuar';
           </div>
 
           <button type="submit" className="glassBtn auth-submit-btn" disabled={loading}>
-            {loading ? 'PROCESSING...' : (isLoginMode ? 'LOGIN' : 'REGISTER')}
+            {loading ? t('auth.processing') : (isLoginMode ? t('auth.submitLogin') : t('auth.submitRegister'))}
           </button>
         </form>
 
         <div className="auth-switch">
           <p>
-            {isLoginMode ? "Don't have an account? " : "Already have an account? "}
+            {isLoginMode ? `${t('auth.noAccount')} ` : `${t('auth.hasAccount')} `}
             <span onClick={() => { setIsLoginMode(!isLoginMode); setError(''); }}>
-              {isLoginMode ? 'Create one now' : 'Log in here'}
+              {isLoginMode ? t('auth.createOne') : t('auth.loginHere')}
             </span>
           </p>
         </div>
