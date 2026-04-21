@@ -1,0 +1,627 @@
+POST http://localhost:8080/api/movies
+Content-Type: application/json
+
+{
+  "title": "Mroczny Rycerz",
+  "description": "Batman musi zmierzyć się z Jokerem, który sieje chaos w Gotham.",
+  "durationMin": 152,
+  "posterUrl": "/uploads/posters/batman.jpg"
+}
+###
+POST http://localhost:8080/api/movies
+Content-Type: application/json
+
+{
+  "title": "Mroczny Rycerz2",
+  "description": "Batman musi zmierzyć się z Jokerem, który sieje chaos w GothamC.",
+  "durationMin": 150,
+  "posterUrl": "/uploads/posters/batman1.jpg"
+}
+###
+POST http://localhost:8080/api/rooms
+Content-Type: application/json
+
+{
+  "name": "Sala 1",
+  "totalSeats": 50
+}
+###
+POST http://localhost:8080/api/screenings
+Content-Type: application/json
+
+{
+  "movie": {
+    "id": 1
+  },
+  "room": {
+    "id": 1
+  },
+  "startTime": "2026-03-24T18:30:00"
+}
+###
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "email": "klient2@kino.pl",
+  "password": "mojehaslo",
+  "role": "USER"
+}
+###
+POST http://localhost:8080/api/tickets
+Content-Type: application/json
+
+{
+  "user": {
+    "id": 1
+  },
+  "screening": {
+    "id": 1
+  },
+  "seatNumber": "A1",
+  "status": "AKTYWNY"
+}
+###
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+"email": "szef@kino.pl",
+"password": "hasloszefa",
+"role": "ADMIN"
+}
+
+### TEST 1: Próba dodania filmu przez zwykłego usera (powinno zwrócić 403)
+POST http://localhost:8080/api/movies
+Authorization: Basic klient2@kino.pl mojehaslo
+Content-Type: application/json
+
+{
+  "title": "Film Klienta",
+  "description": "Zwykły użytkownik próbuje dodać film.",
+  "durationMin": 90,
+  "posterUrl": "brak"
+}
+
+### TEST 2: Dodawanie filmu przez Szefa (powinno zwrócić 200 OK / 201)
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Incepcja",
+  "description": "Złodziej snów dostaje zadanie zaszczepienia idei w umyśle.",
+  "durationMin": 148,
+  "posterUrl": "/uploads/posters/inception.jpg"
+}
+
+### Próba kupienia ZAJĘTEGO miejsca (Klient 2 próbuje kupić A1, które wcześniej kupił Admin)
+POST http://localhost:8080/api/tickets
+Authorization: Basic klient2@kino.pl mojehaslo
+Content-Type: application/json
+
+{
+  "user": {
+    "id": 3
+  },
+  "screening": {
+    "id": 1
+  },
+  "seatNumber": "A1"
+}
+
+### Próba zwrotu biletu (Metoda PUT, bo modyfikujemy status!)
+PUT http://localhost:8080/api/tickets/1/return
+Authorization: Basic szef@kino.pl hasloszefa
+
+### Dodaj: Project Hail Mary
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Project Hail Mary",
+  "description": "Science teacher Ryland Grace (Ryan Gosling) wakes up on a spaceship light years from home with no recollection of who he is or how he got there. As his memory returns, he begins to uncover his mission: solve the riddle of the mysterious substance causing the sun to die out.",
+  "durationMin": 156,
+  "posterUrl": "/posters/hail_mary.jpg",
+  "director": "Phil Lord, Christopher Miller",
+  "mainCast": "Ryan Gosling, Sandra Hüller, Lionel Boyce, Ken Leung",
+  "releaseDate": "2026-03-19",
+  "genres": "Sci-Fi, Thriller",
+  "minimumAge": 12,
+  "languageVersion": "Napisy PL"
+}
+
+### Dodaj: Reminders of Him
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Reminders of Him",
+  "description": "The film follows Kenna, who returns to her hometown after seven years in prison, hoping to rebuild her life and meet the daughter she has never known. An emotional story about mistakes, forgiveness, and the fight for a second chance.",
+  "durationMin": 114,
+  "posterUrl": "/posters/reminders.jpg",
+  "director": "Vanessa Caswill",
+  "mainCast": "Maika Monroe, Tyriq Withers, Rudy Pankow, Lainey Wilson",
+  "releaseDate": "2026-03-13",
+  "genres": "Romance, Drama",
+  "minimumAge": 12,
+  "languageVersion": "Napisy PL"
+}
+
+### Dodaj: Arco
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Arco",
+  "description": "A 10-year-old boy from a peaceful, distant future accidentally travels back to the year 2075 and discovers a world in peril. As Arco develops a friendship with a young girl named Iris, they band together to get Arco home.",
+  "durationMin": 89,
+  "posterUrl": "/posters/arco.jpg",
+  "director": "Ugo Bienvenu",
+  "mainCast": "Natalie Portman, Mark Ruffalo, Will Ferrell",
+  "releaseDate": "2026-03-20",
+  "genres": "Animation, Adventure",
+  "minimumAge": 0,
+  "languageVersion": "Dubbing PL"
+}
+
+### Dodaj: AKIRA
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "AKIRA (1988)",
+  "description": "A secret military project endangers Neo-Tokyo when it turns a biker gang member into a rampaging psychic psychopath that only two teenagers and a group of psychics can stop. Iconic and game-changing cyberpunk classic.",
+  "durationMin": 124,
+  "posterUrl": "/posters/akira.jpg",
+  "director": "Katsuhiro Otomo",
+  "mainCast": "Tesshô Genda, Mitsuo Iwata, Nozomu Sasaki",
+  "releaseDate": "2026-04-17",
+  "genres": "Anime, Sci-Fi",
+  "minimumAge": 15,
+  "languageVersion": "Napisy PL"
+}
+
+### Dodaj: The Devil Wears Prada 2
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "The Devil Wears Prada 2",
+  "description": "Twenty years after making their iconic turns as Miranda, Andy, Emily and Nigel, they return to the fashionable streets of New York City and the sleek offices of Runway Magazine.",
+  "durationMin": 120,
+  "posterUrl": "/posters/prada2.jpg",
+  "director": "David Frankel",
+  "mainCast": "Meryl Streep, Anne Hathaway, Emily Blunt, Stanley Tucci",
+  "releaseDate": "2026-05-01",
+  "genres": "Comedy, Drama",
+  "minimumAge": 12,
+  "languageVersion": "Napisy PL"
+}
+
+
+
+### Dodaj: Ready or Not 2
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Ready or Not 2: Here I Come",
+  "description": "Moments after surviving an all-out attack from the Le Domas family, Grace (Samara Weaving) discovers she’s reached the next level of the nightmarish game — and this time with her estranged sister Faith.",
+  "durationMin": 108,
+  "posterUrl": "/posters/ready_or_not_2.jpg",
+  "director": "Matt Bettinelli-Olpin, Tyler Gillett",
+  "mainCast": "Samara Weaving, Kathryn Newton, Sarah Michelle Gellar",
+  "releaseDate": "2026-03-20",
+  "genres": "Horror, Thriller",
+  "minimumAge": 18,
+  "languageVersion": "Napisy PL"
+}
+
+### Dodaj: Fuze
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Fuze",
+  "description": "When a World War II bomb is discovered in central London a team of military experts led by Will, are sent in to investigate and defuse it. Amidst the chaos, a group of men begin an audacious jewel heist.",
+  "durationMin": 96,
+  "posterUrl": "/posters/fuze.jpg",
+  "director": "David Mackenzie",
+  "mainCast": "Theo James, Aaron Taylor-Johnson, Sam Worthington",
+  "releaseDate": "2026-04-03",
+  "genres": "Action, Thriller",
+  "minimumAge": 15,
+  "languageVersion": "Napisy PL"
+}
+
+### Dodaj: The Super Mario Galaxy Movie
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "The Super Mario Galaxy Movie",
+  "description": "Leaving the Mushroom Kingdom behind to explore strange new worlds across the galaxy, the loveable plumber and his brother Luigi soon befriend Yoshi, before teaming up with Princess Peach.",
+  "durationMin": 98,
+  "posterUrl": "/posters/mario_galaxy.jpg",
+  "director": "Aaron Horvath, Michael Jelenic",
+  "mainCast": "Chris Pratt, Anya Taylor-Joy, Jack Black",
+  "releaseDate": "2026-04-01",
+  "genres": "Animation, Adventure",
+  "minimumAge": 0,
+  "languageVersion": "Dubbing PL"
+}
+
+
+
+### Seans 1: Mario na 1 Kwietnia
+POST http://localhost:8080/api/screenings
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "movie": { "id": 7 },
+  "room": { "id": 1 },
+  "startTime": "2026-04-01T11:30:00"
+}
+
+### Seans 2: Ready or Not 2 na 1 Kwietnia
+POST http://localhost:8080/api/screenings
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "movie": { "id": 6 },
+  "room": { "id": 1 },
+  "startTime": "2026-04-01T20:00:00"
+}
+
+### Seans 3: Fuze na 2 Kwietnia (Dzień później!)
+POST http://localhost:8080/api/screenings
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "movie": { "id": 7 },
+  "room": { "id": 1 },
+  "startTime": "2026-04-02T18:45:00"
+}
+
+### Seans 3: Fuze na 2 Kwietnia (Dzień później!)
+POST http://localhost:8080/api/screenings
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "movie": { "id": 5 },
+  "room": { "id": 1 },
+  "startTime": "2026-04-01T12:45:00"
+}
+
+
+### Seans 3: Fuze na 2 Kwietnia (Dzień później!)
+POST http://localhost:8080/api/screenings
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "movie": { "id": 4 },
+  "room": { "id": 1 },
+  "startTime": "2026-04-01T22:45:00"
+}
+### Seans 3: Fuze na 2 Kwietnia (Dzień później!)
+POST http://localhost:8080/api/screenings
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "movie": { "id": 2 },
+  "room": { "id": 1 },
+  "startTime": "2026-04-01T12:00:00"
+}
+
+
+### Test pobierania seansu bez logowania
+GET http://localhost:8080/api/screenings/6
+
+
+
+### 1. Project Hail Mary
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Project Hail Mary",
+  "shortDescription": "A lone astronaut awakens on a spaceship with amnesia. His mission: solve a cosmic mystery to save Earth from a dying sun.",
+  "fullDescription": "Science teacher Ryland Grace (Ryan Gosling) wakes up on a spaceship light years from home with no recollection of who he is or how he got there. As his memory returns, he begins to uncover his mission: solve the riddle of the mysterious substance causing the sun to die out. He must call on his scientific knowledge and unorthodox ideas to save everything on Earth from extinction... but an unexpected friendship means he may not have to do it alone.",
+  "durationMin": 156,
+  "posterUrl": "/posters/hail_mary.jpg",
+  "director": "Phil Lord, Christopher Miller",
+  "mainCast": "Ryan Gosling, Sandra Hüller, Lionel Boyce",
+  "releaseDate": "2026-03-19",
+  "genres": "Sci-Fi, Thriller",
+  "minimumAge": 12,
+  "languageVersion": "SUB"
+}
+
+### 2. Reminders of Him
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Reminders of Him",
+  "shortDescription": "After serving time, a young mother returns to her hometown to rebuild her life and connect with the daughter she has never known.",
+  "fullDescription": "The film is based on the novel 'Reminders of Him' by Colleen Hoover. It follows Kenna, who returns to her hometown after seven years in prison, hoping to rebuild her life and meet the daughter she has never known. When the child’s grandparents refuse to let her see the girl, Kenna finds unexpected support in Ledger, a former athlete and bar owner. As their relationship grows, it brings both hope and new complications. It’s a deeply emotional story about mistakes, forgiveness, and the ultimate fight for a second chance.",
+  "durationMin": 114,
+  "posterUrl": "/posters/reminders.jpg",
+  "director": "Vanessa Caswill",
+  "mainCast": "Maika Monroe, Tyriq Withers, Rudy Pankow",
+  "releaseDate": "2026-03-13",
+  "genres": "Romance, Drama",
+  "minimumAge": 12,
+  "languageVersion": "SUB"
+}
+
+### 3. Arco
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Arco",
+  "shortDescription": "A 10-year-old boy from a peaceful future accidentally travels back to 2075. Alongside new friends, he embarks on an epic quest to return home.",
+  "fullDescription": "A 10-year-old boy from a peaceful, distant future accidentally travels back to the year 2075 and discovers a world in peril. As Arco develops a friendship with a young girl named Iris, they band together and, along with her trusted robot caretaker Mikki, set out on a perilous quest to get Arco home. A remarkable journey through time, ARCO is a dazzling animated adventure full of hope, friendship and magic.",
+  "durationMin": 89,
+  "posterUrl": "/posters/arco.jpg",
+  "director": "Ugo Bienvenu",
+  "mainCast": "Natalie Portman, Mark Ruffalo, Will Ferrell",
+  "releaseDate": "2026-03-20",
+  "genres": "Animation, Adventure",
+  "minimumAge": 0,
+  "languageVersion": "DUB"
+}
+
+### 4. AKIRA (1988)
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "AKIRA (1988)",
+  "shortDescription": "The definitive cyberpunk anime masterpiece. A secret military project turns a biker gang member into a rampaging psychic in Neo-Tokyo.",
+  "fullDescription": "Iconic and game-changing, AKIRA is the definitive anime masterpiece! Katsuhiro Otomo's landmark cyberpunk classic obliterated the boundaries of Japanese animation and forced the world to look into the future. July, 1988 — World War III breaks loose. Then, in 2019, in megalopolis Tokyo... As the leader of a group of young delinquents, Kaneda spent his nights racing his motorbike. When his friend Tetsuo encounters a strange boy from a military experiment, extreme procedures awaken a terrifying new power in him, threatening to consume the entire city.",
+  "durationMin": 124,
+  "posterUrl": "/posters/akira.jpg",
+  "director": "Katsuhiro Otomo",
+  "mainCast": "Tesshô Genda, Mitsuo Iwata, Nozomu Sasaki",
+  "releaseDate": "2026-04-17",
+  "genres": "Anime, Sci-Fi",
+  "minimumAge": 15,
+  "languageVersion": "SUB"
+}
+
+### 5. The Devil Wears Prada 2
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "The Devil Wears Prada 2",
+  "shortDescription": "Miranda, Andy, Emily, and Nigel return to the fashionable streets of New York City in the eagerly awaited sequel to the 2006 phenomenon.",
+  "fullDescription": "Twenty years after making their iconic turns as Miranda, Andy, Emily and Nigel—Meryl Streep, Anne Hathaway, Emily Blunt and Stanley Tucci return to the fashionable streets of New York City and the sleek offices of Runway Magazine in 'The Devil Wears Prada 2'. The eagerly awaited sequel explores how the landscape of high fashion and media has drastically changed, forcing Miranda Priestly to navigate a world that no longer bows to print, while Andy finds herself in a position of unexpected power.",
+  "durationMin": 120,
+  "posterUrl": "/posters/prada2.jpg",
+  "director": "David Frankel",
+  "mainCast": "Meryl Streep, Anne Hathaway, Emily Blunt",
+  "releaseDate": "2026-05-01",
+  "genres": "Comedy, Drama",
+  "minimumAge": 12,
+  "languageVersion": "SUB"
+}
+
+### 6. Ready or Not 2: Here I Come
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Ready or Not 2: Here I Come",
+  "shortDescription": "Grace discovers she’s reached the next level of the nightmarish game. Now, four rival families are hunting her for the throne.",
+  "fullDescription": "Moments after surviving an all-out attack from the Le Domas family, Grace (Samara Weaving) discovers she’s reached the next level of the nightmarish game — and this time with her estranged sister Faith (Kathryn Newton) at her side. Grace has one chance to survive, keep her sister alive, and claim the High Seat of the Council that controls the world. Four rival aristocratic families are hunting her for the throne, and whoever wins rules it all in a blood-soaked battle for supremacy.",
+  "durationMin": 108,
+  "posterUrl": "/posters/ready_or_not_2.jpg",
+  "director": "Matt Bettinelli-Olpin",
+  "mainCast": "Samara Weaving, Kathryn Newton, Elijah Wood",
+  "releaseDate": "2026-03-20",
+  "genres": "Horror, Thriller",
+  "minimumAge": 18,
+  "languageVersion": "SUB"
+}
+
+### 7. Fuze
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Fuze",
+  "shortDescription": "An unexploded WW2 bomb forces the evacuation of central London, creating the perfect distraction for an audacious multi-million pound jewel heist.",
+  "fullDescription": "Central London is thrown into panic by the discovery of an unexploded WW2 bomb on a construction site. When military experts led by Will (Aaron Taylor-Johnson) are sent in to defuse it, a huge police operation is put into action to evacuate thousands. Amidst the chaos, a group of men under the guidance of diamond-expert Karalis (Theo James), are hiding out in a basement within the evacuation zone. With emergency services stretched to the limit, the group begins an audacious jewel heist under cover of the ultimate distraction.",
+  "durationMin": 96,
+  "posterUrl": "/posters/fuze.jpg",
+  "director": "David Mackenzie",
+  "mainCast": "Theo James, Aaron Taylor-Johnson",
+  "releaseDate": "2026-04-03",
+  "genres": "Action, Thriller",
+  "minimumAge": 15,
+  "languageVersion": "SUB"
+}
+
+### 8. The Super Mario Galaxy Movie
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "The Super Mario Galaxy Movie",
+  "shortDescription": "Mario and Luigi blast off on a cosmic adventure across strange new worlds to face a new intergalactic threat from Bowser Jr.",
+  "fullDescription": "Leaving the Mushroom Kingdom behind to explore strange new worlds across the galaxy, the loveable plumber and his brother Luigi soon befriend Yoshi, before teaming up with Princess Peach and Toad. As they journey through space, they face a terrifying new threat from Bowser Jr., the vengeful son of Bowser, and encounter Rosalina, the mysterious and powerful guardian of the stars. It's a visually stunning, fully immersive 3D cosmic adventure for the whole family.",
+  "durationMin": 98,
+  "posterUrl": "/posters/mario_galaxy.jpg",
+  "director": "Aaron Horvath, Michael Jelenic",
+  "mainCast": "Chris Pratt, Anya Taylor-Joy, Jack Black",
+  "releaseDate": "2026-04-01",
+  "genres": "Animation, Adventure",
+  "minimumAge": 0,
+  "languageVersion": "DUB"
+}
+
+### Dodaj Salę 2 (Średnia)
+POST http://localhost:8080/api/rooms
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "name": "Nebula Hall",
+  "totalSeats": 60
+}
+
+### Dodaj Salę 3 (Mała/VIP)
+POST http://localhost:8080/api/rooms
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "name": "Supernova VIP",
+  "totalSeats": 20
+}
+
+
+
+### 1. The Magic Faraway Tree
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "The Magic Faraway Tree",
+  "shortDescription": "A modern family relocates to the countryside and discovers a magical tree inhabited by eccentric residents and fantastical lands.",
+  "fullDescription": "The Magic Faraway Tree follows Polly (Claire Foy) and Tim (Andrew Garfield) as they adapt to their new lives in the remote English countryside. Their children discover a magical tree and its extraordinary residents including Moonface and Silky. At the top of the tree, they are transported to spectacular lands where the family learns to reconnect and value each other through incredible adventures.",
+  "durationMin": 110,
+  "posterUrl": "/posters/faraway_tree.jpg",
+  "director": "Ben Gregor",
+  "mainCast": "Andrew Garfield, Claire Foy, Nicola Coughlan",
+  "releaseDate": "2026-03-27",
+  "genres": "Family, Fantasy",
+  "minimumAge": 0,
+  "languageVersion": "DUB"
+}
+
+### 2. Hoppers
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Hoppers",
+  "shortDescription": "An animal lover uses technology to place her consciousness into a robotic beaver to uncover mysteries within the animal world.",
+  "fullDescription": "An animal lover seizes an opportunity to use cutting-edge technology that places her consciousness into a robotic beaver. She embarks on an undercover journey, uncovering mysteries within the animal world that are beyond anything she could have ever imagined.",
+  "durationMin": 104,
+  "posterUrl": "/posters/hoppers.jpg",
+  "director": "Daniel Chong",
+  "mainCast": "Jon Hamm, Bobby Moynihan, Piper Curda",
+  "releaseDate": "2026-03-06",
+  "genres": "Animation, Comedy",
+  "minimumAge": 0,
+  "languageVersion": "DUB"
+}
+
+### 3. Dhurandhar: The Revenge
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Dhurandhar: The Revenge",
+  "shortDescription": "An undercover operative tracks a dangerous criminal through Pakistan's underworld in this high-stakes action epic.",
+  "fullDescription": "Hamza Ali Mazari, whose real identity is Jaskirat Singh Rangi, pursues a high-risk undercover operation within Pakistan's criminal world. His mission: track down the elusive Majo. A gripping tale of revenge, identity, and justice spanning nearly four hours of intense cinematic action.",
+  "durationMin": 235,
+  "posterUrl": "/posters/dhurandhar.jpg",
+  "director": "Aditya Dhar",
+  "mainCast": "Sanjay Dutt, Sara Arjun, Rakesh Bedi",
+  "releaseDate": "2026-03-19",
+  "genres": "Action, Crime",
+  "minimumAge": 18,
+  "languageVersion": "SUB"
+}
+
+### 4. Scream 7
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "Scream 7",
+  "shortDescription": "Sidney Prescott must face her darkest fears again when a new Ghostface emerges, targeting her daughter.",
+  "fullDescription": "When a new Ghostface killer emerges in the quiet town where Sidney Prescott has built a new life, her darkest fears are realized as her daughter becomes the next target. Determined to protect her family, Sidney must face the horrors of her past to put an end to the bloodshed once and for all. The iconic slasher franchise returns with higher stakes than ever.",
+  "durationMin": 113,
+  "posterUrl": "/posters/scream7.jpg",
+  "director": "Kevin Williamson",
+  "mainCast": "Neve Campbell, Courteney Cox, Isabel May",
+  "releaseDate": "2026-02-26",
+  "genres": "Horror, Mystery",
+  "minimumAge": 18,
+  "languageVersion": "SUB"
+}
+
+### 5. How To Make A Killing
+POST http://localhost:8080/api/movies
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "title": "How To Make A Killing",
+  "shortDescription": "Disowned at birth, Becket Redfellow will stop at nothing to reclaim his obscenely wealthy family's inheritance.",
+  "fullDescription": "Disowned at birth by his obscenely wealthy family, blue-collar Becket Redfellow (Glen Powell) will stop at nothing to reclaim his inheritance, no matter how many relatives stand in his way. A dark comedy-thriller about greed, family legacy, and the lengths one man will go to get what he believes is rightfully his.",
+  "durationMin": 120,
+  "posterUrl": "/posters/killing.jpg",
+  "director": "Unknown",
+  "mainCast": "Glen Powell",
+  "releaseDate": "2026-04-01",
+  "genres": "Thriller, Comedy",
+  "minimumAge": 15,
+  "languageVersion": "SUB"
+}
+
+### Scream 7 - Seans 1 (Główna sala)
+POST http://localhost:8080/api/screenings
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "movie": { "id": 12 },
+  "room": { "id": 1 },
+  "startTime": "2026-04-02T22:30:00"
+}
+
+### Scream 7 - Seans 2 (Sala 2, dzień później)
+POST http://localhost:8080/api/screenings
+Authorization: Basic szef@kino.pl hasloszefa
+Content-Type: application/json
+
+{
+  "movie": { "id": 7 },
+  "room": { "id": 2 },
+  "startTime": "2026-04-01T14:30:00",
+  "price": 36
+}

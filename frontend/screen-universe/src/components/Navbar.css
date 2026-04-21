@@ -1,0 +1,149 @@
+.navbar {
+  position: fixed;
+  z-index: 999;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px 20px;
+  left: 0;
+  top: 0;
+  right: 0;
+
+  backdrop-filter: blur(10px);
+border-bottom: 1px solid rgba(255, 0, 0, 0);
+  transition: 0.5s;
+}
+.navbar:hover{
+  border-bottom: 1px solid rgb(255, 0, 0);
+}
+.navbar a { text-decoration: none; color: white; transition: 0.3s; }
+.navbar a:hover { color: red; }
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+}
+nav div{
+  width: 2%;
+  text-wrap-mode: nowrap;
+
+  text-align: center;
+}
+nav ul{
+  display: flex;
+  list-style: none;
+  width: 20%;
+  justify-content: space-between;
+}
+a{
+  text-decoration: none;
+
+  transition: .5s;
+    color: red;
+  
+}
+nav ul li,nav ul li h6{
+  transition: .5s;
+white-space: nowrap;
+
+}
+
+nav ul li:hover h6{
+  color: red;
+
+}
+nav h5 span{
+ transition: .5s;
+}
+nav h5:hover span{
+  color: red;
+}
+.hamburger { display: none; cursor: pointer; }
+.bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: white; transition: all 0.3s ease-in-out; }
+.mobile-login { display: none; }
+
+/* === WERSJA MOBILNA NAVBARU === */
+@media (max-width: 768px) {
+  
+  /* 1. CAŁKOWICIE ZABIJAMY PASEK NA GÓRZE */
+  .navbar {
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: none !important;
+    padding: 20px !important;
+    pointer-events: none; /* Pozwala klikać w stronę "przez" niewidzialny pasek! */
+  }
+
+  /* 2. PRZYWRACAMY KLIKALNOŚĆ DLA LOGO I HAMBURGERA */
+  .nav-logo, .hamburger {
+    pointer-events: auto;
+  }
+  .nav-logo{
+    display: none;
+  }
+  /* (OPCJONALNIE) Jeśli na telefonie nie chcesz widzieć napisu "SCREEN UNIVERSE" na górze, 
+     tylko samego hamburgera, odkomentuj poniższą linijkę: */
+  /* .nav-logo { display: none; } */
+
+  /* 3. LEWITUJĄCY HAMBURGER W PRAWYM GÓRNYM ROGU */
+  .hamburger {
+    display: block;
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    width: 50px;
+
+    height: 45px;
+
+    z-index: 1001; /* Zawsze na samym wierzchu */
+
+    /* Własne, malutkie szklane pudełeczko dla przycisku */
+    background: rgba(0, 0, 0, 0.6);
+
+ 
+    border-radius: 8px;
+
+    backdrop-filter: blur(5px);
+    transition: 0.3s ease;
+  }
+
+  /* Gdy menu wyjeżdża, usuwamy tło hamburgera, żeby zlał się z panelem */
+  .hamburger.active {
+    background: transparent;
+    border-color: transparent;
+    backdrop-filter: none;
+  }
+
+  /* Animacja ikony X (to już miałeś, upewnij się, że zostaje) */
+  .hamburger.active .bar:nth-child(2) { opacity: 0; }
+  .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); background-color: red; }
+  .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background-color: red; }
+
+  .desktop-login { display: none; }
+  .mobile-login { display: block; margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; }
+
+  /* WYSUWANE MENU Z BOKU */
+  .nav-links {
+    position: fixed;
+    pointer-events: auto; /* Menu musi być klikalne! */
+    left: -100%; 
+    top: 0;
+    flex-direction: column;
+    background-color: #050505;
+    width: 70%;
+    height: 100vh;
+    text-align: center;
+    transition: 0.4s cubic-bezier(0.77, 0, 0.175, 1); /* Płynniejsze, bardziej kinowe wysuwanie */
+    padding-top: 100px;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.8);
+    z-index: 1000; /* Menu pod hamburgerem (który ma 1001) */
+  }
+  
+  .nav-links.active {
+    left: 0; 
+  }
+  
+  .nav-links li { margin: 15px 0; }
+}

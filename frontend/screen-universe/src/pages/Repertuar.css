@@ -1,0 +1,244 @@
+/* GŁÓWNY KONTENER */
+.repertuar-container {
+  min-height: 100vh;
+  padding-top: 120px; /* Miejsce pod Navbar */
+  padding-bottom: 80px;
+  background-color: #050505;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+}
+
+.repertuar-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* WYSZUKIWARKA */
+.search-bar-wrapper {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.search-input {
+  padding: 15px 20px;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.search-input:focus {
+  border-color: red;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+}
+
+/* KAFELKI Z DNIAMI */
+.date-picker-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 50px;
+  padding: 0 5%;
+}
+
+.date-tile {
+  background-color: #1a1a1a;
+  color: #aaa;
+  border: 1px solid #333;
+  padding: 12px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.date-tile:hover {
+  background-color: #333;
+  color: white;
+}
+
+.date-tile.active {
+  background-color: rgba(255, 0, 0, 0.1);
+  border-color: red;
+  color: white;
+  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.day-name {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.day-date {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* LISTA FILMÓW */
+.movie-repertoire-list {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+.no-screenings {
+  text-align: center;
+  color: gray;
+  font-weight: normal;
+}
+
+.repertoire-card {
+  display: flex;
+  margin-bottom: 40px;
+  background-color: #111;
+
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: transform 0.3s ease;
+}
+
+.repertoire-card:hover {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.poster-side {
+overflow: hidden;
+width: 30%;
+  margin-right: 30px;
+  display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.poster-side img {
+ width: 100%;
+   cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+
+aspect-ratio: 2/3;
+}
+
+.info-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 25px 25px 25px 0px;
+}
+
+.info-side h2 {
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: rgb(255, 0, 0);
+}
+
+.movie-short-desc {
+  color: #bbb;
+  margin-bottom: 20px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.movie-meta-info {
+  display: flex;
+  flex-direction: column;
+
+  margin-bottom: 20px;
+  color: #888;
+
+}
+.movie-meta-info span{
+      font-size: 13px;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #333;
+  margin-bottom: 25px;
+}
+
+/* KAFELKI GODZIN (Ostateczne przyciski) */
+.times-container {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+
+}
+
+.time-tile {
+  background-color: #1a1a1a;
+  border: 1px solid #444;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center; /* Zmieniono z left na center, bo jest cena */
+  flex: 1;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.time-tile:hover {
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
+  transform: scale(1.05);
+}
+
+.time-tile:hover .room-text, .time-tile:hover .price-text {
+  color: #333; /* Żeby na białym tle szary tekst był widoczny */
+}
+
+.time-text {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.price-text {
+  font-size: 13px;
+  color: #aaa;
+  font-weight: bold;
+}
+
+.room-text {
+  font-size: 11px;
+  color: #777;
+}
+
+/* WERSJA MOBILNA DLA REPERTUARU */
+@media (max-width: 768px) {
+  .repertoire-card {
+    flex-direction: column; /* Plakat idzie nad tekst */
+    align-items: center;
+    padding: 20px;
+  }
+
+  .poster-side {
+    margin-right: 0;
+    margin-bottom: 20px;
+    width: 60%; /* Plakat nie na całą szerokość ekranu */
+    flex: auto;
+  }
+
+  .movie-meta-info {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .times-container {
+    justify-content: center;
+  }
+}

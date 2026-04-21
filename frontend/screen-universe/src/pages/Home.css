@@ -1,0 +1,390 @@
+/* Blokujemy przewijanie całego dokumentu, żeby nic nam nie skakało */
+/* Główny kontener - zarządza przyciąganiem scrolla */
+.video-scroller-container {
+  height: 100vh;
+  width: 100vw;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  position: relative;
+}
+
+/* Wideo przyklejone w tle */
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Kontener trzymający teksty nad wideo */
+.HomeSectionContainer{
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+
+/* Pojedyncza sekcja z tekstem (na pełen ekran) */
+.HomeSectionContainer > * {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  scroll-snap-align: center;
+  padding: 4%
+  
+}
+.section1{
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: column;
+
+}
+.sec1Container{
+width: 50%;
+text-align: center;;
+display: flex;
+flex-direction: column;
+justify-content: space-around;
+height: 40%;
+
+
+}
+.sec1Container h1{
+font-weight: bold;
+}
+
+.shadow{
+  text-shadow: 
+    6px 3px 4px red, 
+    6px 6px 4px blue;
+}
+
+/* Warstwa gradientu, która pojawi się płynnie na hover */
+
+.section2{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+
+}
+
+.sec2container{
+  width: 80%;
+
+}
+.flex-row{
+  display: flex;
+
+  justify-content: space-around;
+  
+    height: 30%;
+}
+.sec2container section{
+
+display: flex;
+flex-direction: column;
+justify-content: space-around;
+align-items: center;
+width: 30%;
+}
+.sec2container section img{
+  filter: hue-rotate(100deg);
+  width: 20%;
+}
+.sec3container{
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+padding: 2% 0%;
+height: 100%;
+width: 47%;
+}
+.section4 button{
+  align-self: flex-start;
+}
+.sec4Container{
+  width: 47%;
+  height: 100%;
+  padding: 2% 0%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+}
+
+
+
+
+/* Ostatnia sekcja - zwykła strona z tłem */
+.section5 {
+  height: 100vh;
+  background: #000000; /* Zmień na czarny (#000000), jeśli wideo wygasza się do czerni */
+  
+
+  padding: 4%;
+  display: flex;
+  color: white;
+  flex-direction: column;
+    justify-content: space-around;
+  position: relative;
+
+  scroll-snap-align: start;
+    z-index: 2;
+}
+.section5 h1{
+  align-self: center;
+}
+
+.homeMain {
+  opacity: 0;
+  transform: translateY(40px);
+    display: flex;
+  height: 60%;
+
+}
+
+.homeMain.fade-in {
+  animation: fadeSlideUp 0.5s ease forwards;
+}
+
+@keyframes fadeSlideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.section5 .movie-buttons{
+  display: flex;
+  gap: 30px;
+}
+.section5 .premiereBtn{
+  background-color: transparent;
+  color: red;
+  border: none;
+  border-left: 3px solid red;
+  border-right: 3px solid rgba(255, 0, 0, 0);
+  border-bottom: 3px solid rgba(255, 0, 0, 0);
+  border-top: 3px solid rgba(255, 0, 0, 0);
+  border-radius: 999px;
+  padding: 1%;
+  transition: .2s;
+  font-size: 100%;
+  cursor: pointer;
+  background: radial-gradient(
+    circle at left, 
+    rgba(255, 0, 0, 0) 0%,   /* Czerwony u dołu (półprzezroczysty dla efektu szkła) */
+    rgba(255, 255, 255, 0) 70% /* Reszta przechodzi w delikatną biel */
+  );
+}
+.section5 .premiereBtn:hover{
+  background-color: #fff;
+  color: #000;
+  transform: scale(1.05);
+  
+
+}
+.premiereBtn.hovered {
+  background-color: #fff;
+  color: #000;
+  transform: scale(1.05);
+}
+.homeMain .left, .homeMain .right{
+  width: 50%;
+  display: flex;
+  justify-content: space-around;
+}
+.homeMain div.blurBg{
+  position: absolute;
+
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  transform: scale(1.4);
+  z-index: -2;
+  filter: blur(10px);
+
+}
+.homeMain .left{
+  flex-direction: column;
+}
+.homeMain .left button{
+  align-self: flex-start;
+}
+.homeMain .right{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+}
+.homeMain .right img{
+  width: 40%;
+}
+
+
+.section6{
+  height: 100vh;
+ 
+    position: relative;
+  background-color: #000;
+  scroll-snap-align: start;
+
+  display: flex;
+  flex-direction: column;
+overflow: hidden;
+    z-index: 2;
+}
+
+.statsSection {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 0.8s ease;
+  font-family: "Poppins", sans-serif;
+  padding: 4% 4% 0% 4%;
+  color: #e0e0e0;
+  height: 85%;
+  z-index: 33;
+
+}
+.section6 footer{
+ border-top: 1px solid red;
+  height: 15%;
+align-items: center;
+background-color: black;
+  display: flex;
+}
+
+
+.section6 footer div.right{
+   width: 50%;
+display: flex;
+justify-content: flex-start;
+
+
+
+}
+.section6 footer div.left{
+ width: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+gap: 10px;
+
+
+}
+.section6 footer div.right > div{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 30%;
+
+}
+.socialIcons{
+  display: flex;
+  flex-direction: row;
+  width: 150%;
+  gap: 10px;
+
+}
+.socialIcons img{
+  width: 4%;
+  cursor: pointer;
+  filter: contrast(0%);
+  transition: .5s;
+}
+
+@media (max-width: 768px) {
+.socialIcons img{
+  filter: contrast(100%);
+}
+footer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 2%;
+  height: auto;
+}
+footer > div{
+  width: 50%;
+}
+}
+.socialIcons img:hover{
+
+  filter: contrast(100%);
+}
+
+
+.statsSection.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.statsGrid {
+  display: flex;
+    width: 50%;
+    padding: 5% 0%;
+  flex-direction: column;
+  justify-content: space-around;
+
+
+  height: 100%;
+
+}
+
+
+/* VIDEO = BACKGROUND */
+.section6-video {
+  position: absolute;
+  top: 0;
+  left: 30%;
+  width: 100%;
+  height: 100%;
+  right: 0%;
+  bottom: 0;
+transform: rotate(270deg);
+  z-index: -11;
+}
+
+/* CONTENT NAD VIDEO */
+
+.stat{
+  display: flex;
+  align-items: center;
+
+  gap: 20px;
+}
+.statTop {
+  font-size: 42px;
+  font-weight: 600;
+  font-weight: bold;
+}
+
+.number {
+  font-size: 42px;
+
+}
+.stat img{
+    filter: hue-rotate(100deg);
+}
+.stat p {
+  opacity: 1;
+  margin-top: 10px;
+}
+
+
+
+
