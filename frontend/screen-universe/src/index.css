@@ -199,22 +199,42 @@ background: radial-gradient(
 }
 
 /* Wersja mobilna dla globalnego footera */
+/* Wersja mobilna dla globalnego footera */
 @media (max-width: 768px) {
-  .global-footer .socialIcons img {
-    filter: contrast(100%);
-  }
-  
   .global-footer {
-    overflow: hidden;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2%;
-    height: auto; /* Na telefonie lepiej dać auto, żeby tekst się nie ucinał */
+    flex-direction: column; /* Układamy jedno pod drugim */
+    padding: 30px 20px;
+    height: auto; /* Pozwala stopce rosnąć w dół */
+    text-align: center;
+    gap: 30px;
   }
   
-  .global-footer > div {
-    width: 50%;
+  .global-footer div.left, 
+  .global-footer div.right {
+    width: 100%; /* Pełna szerokość na telefonie */
+    justify-content: center;
+  }
+  
+  .global-footer div.right {
+    flex-direction: column; /* Elementy z prawej też ułożone pionowo */
+    align-items: center;
+    gap: 30px;
+  }
+
+  .global-footer div.right > div {
+    width: 100%;
+    align-items: center;
+  }
+
+  .global-footer .socialIcons {
+    width: auto;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .global-footer .socialIcons img {
+    width: 35px; /* STAŁA WIELKOŚĆ zamiast procentów! */
+    height: 35px;
+    filter: contrast(100%); /* Zawsze widoczne na telefonie */
   }
 }

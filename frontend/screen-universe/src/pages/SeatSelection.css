@@ -334,3 +334,45 @@
   0% { transform: scale(0); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
+
+/* RESPONSYSWNOŚĆ SEAT SELECTION (Dla ekranów poniżej 768px) */
+@media (max-width: 768px) {
+  .seat-selection-container {
+    padding: 80px 10px 120px 10px; /* Więcej miejsca na dole dla paska */
+  }
+
+  .seats-grid {
+    /* Zmniejszamy przerwę (schody) na 20px i odstępy między fotelami na 6px */
+    grid-template-columns: repeat(5, min-content) 20px repeat(5, min-content); 
+    gap: 6px;
+  }
+
+  .seat {
+    width: 28px; /* Zmniejszamy rozmiar samego fotela */
+    height: 28px;
+    font-size: 10px; /* Zmniejszona czcionka */
+    border-radius: 6px 6px 3px 3px;
+  }
+
+  .seat-legend {
+    flex-direction: column; /* Legenda jedno pod drugim */
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+
+  .booking-footer {
+    flex-direction: column; /* Podsumowanie w pionie */
+    gap: 15px;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .small-cyber {
+    width: 100%; /* Przycisk kupna na pełną szerokość */
+  }
+
+  .payment-modal {
+    width: 95%;
+    padding: 25px;
+  }
+}

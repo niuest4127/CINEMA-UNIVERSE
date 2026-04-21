@@ -24,7 +24,7 @@
 }
 
 .sidebar-header h2 {
-  color: gold;
+  color: white;
   font-size: 20px;
   margin-bottom: 5px;
 }
@@ -127,7 +127,7 @@
 }
 
 .ticket-seat {
-  color: gold;
+  color: rgb(0, 201, 27);
   font-size: 18px;
 }
 
@@ -235,12 +235,58 @@
 .profile-message.error { background: rgba(255, 0, 0, 0.1); border: 1px solid red; color: #ff4d4d; }
 
 /* RESPONSYSWNOŚĆ */
+/* RESPONSYSWNOŚĆ PROFILU */
 @media (max-width: 900px) {
   .profile-container {
     flex-direction: column;
+    padding: 100px 5% 30px 5%;
   }
+  
   .profile-sidebar {
     flex: auto;
     width: 100%;
+  }
+
+  .profile-content {
+    padding: 20px; /* Mniejsze marginesy wewnętrzne */
+  }
+.sidebar-menu li, h2.tab-title {
+text-align: center;
+}
+  /* Karty biletów układają się w pionie */
+  .ticket-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .ticket-poster {
+    margin-right: 0;
+    width: 140px; /* Większy plakat wyśrodkowany */
+    height: auto;
+  }
+
+  /* Przyciski biletów na 100% szerokości */
+  .ticket-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .cancel-ticket-btn, 
+  .download-btn {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  /* Formularze ustawień jeden pod drugim */
+  .settings-grid {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .settings-form {
+    min-width: 100%;
+    padding: 20px;
   }
 }

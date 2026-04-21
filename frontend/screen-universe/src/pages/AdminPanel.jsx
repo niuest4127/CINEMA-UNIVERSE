@@ -25,9 +25,18 @@ const AdminPanel = () => {
   // --- STANY DLA FORMULARZY ---
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const [movieData, setMovieData] = useState({
-    title: '', shortDescription: '', durationMin: '', minimumAge: '',
-    releaseDate: '', languageVersion: 'Napisy PL', mainCast: '', posterUrl: ''
+const [movieData, setMovieData] = useState({
+    title: '',
+    shortDescription: '',
+    fullDescription: '', // <--- DODANE
+    durationMin: '',
+    minimumAge: '',
+    releaseDate: '',
+    languageVersion: 'Napisy PL',
+    director: '',        // <--- DODANE
+    mainCast: '',
+    genres: '',          // <--- DODANE
+    posterUrl: ''
   });
 
   const [screeningData, setScreeningData] = useState({
@@ -100,8 +109,9 @@ const AdminPanel = () => {
     }
   };
   // --- STANY DLA STRONICOWANIA (PAGINACJI) UŻYTKOWNIKÓW ---
-  const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 5; // Ile osób na jednej stronie?
+const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 5; 
+  const [userSearchQuery, setUserSearchQuery] = useState(''); // <--- DODANE
 
   // --- OCHRONA TRASY I POBIERANIE DANYCH ---
   useEffect(() => {
@@ -177,14 +187,24 @@ const AdminPanel = () => {
   };
 
 
-  // --- LOGIKA STRONICOWANIA ---
-  // 1. Wyliczamy indeksy (Dla str. 1: indeksy 0-4, dla str. 2: indeksy 5-9)
+// --- LOGIKA WYSZUKIWANIA I STRONICOWANIA ---
+  // 1. Najpierw filtrujemy całą listę użytkowników na podstawie wpisanego tekstu
+  const filteredUsers = usersList.filter(u => {
+    const searchLower = userSearchQuery.toLowerCase();
+    const emailMatch = u.email.toLowerCase().includes(searchLower);
+    const fullName = `${u.firstName || ''} ${u.lastName || ''}`.toLowerCase();
+    const nameMatch = fullName.includes(searchLower);
+    
+    return emailMatch || nameMatch;
+  });
+
+  // 2. Mając PRZEFILTROWANĄ listę, wyliczamy indeksy dla obecnej strony
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = usersList.slice(indexOfFirstUser, indexOfLastUser);
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
   
-  // 2. Wyliczamy całkowitą liczbę stron
-  const totalPages = Math.ceil(usersList.length / usersPerPage);
+  // 3. Wyliczamy całkowitą liczbę stron na podstawie PRZEFILTROWANYCH wyników
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -201,9 +221,9 @@ const AdminPanel = () => {
 
       {/* --- MENU ZAKŁADEK --- */}
       <div className="admin-tabs">
-        <button className={activeTab === 'movies' ? 'active' : ''} onClick={() => {setActiveTab('movies'); setMessage({});}}>🎬 Dodaj Film</button>
-        <button className={activeTab === 'screenings' ? 'active' : ''} onClick={() => {setActiveTab('screenings'); setMessage({});}}>📅 Zaplanuj Seans</button>
-        <button className={activeTab === 'users' ? 'active' : ''} onClick={() => {setActiveTab('users'); setMessage({});}}>👥 Użytkownicy</button>
+        <button className={activeTab === 'movies' ? 'active' : ''} onClick={() => {setActiveTab('movies'); setMessage({});}}>Dodaj Film</button>
+        <button className={activeTab === 'screenings' ? 'active' : ''} onClick={() => {setActiveTab('screenings'); setMessage({});}}>Zaplanuj Seans</button>
+        <button className={activeTab === 'users' ? 'active' : ''} onClick={() => {setActiveTab('users'); setMessage({});}}>Użytkownicy</button>
       </div>
 
       <div className="admin-content glass-panel">
@@ -214,23 +234,56 @@ const AdminPanel = () => {
           <form className="admin-form" onSubmit={handleMovieSubmit}>
             <div className="form-grid">
               <div className="input-column">
-                <div className="input-group"><label>Tytuł filmu</label><input required type="text" value={movieData.title} onChange={e => setMovieData({...movieData, title: e.target.value})} /></div>
-                <div className="input-group"><label>Krótki opis</label><textarea required rows="3" value={movieData.shortDescription} onChange={e => setMovieData({...movieData, shortDescription: e.target.value})}></textarea></div>
-                <div className="form-row">
-                  <div className="input-group"><label>Czas trwania (min)</label><input required type="number" value={movieData.durationMin} onChange={e => setMovieData({...movieData, durationMin: e.target.value})} /></div>
-                  <div className="input-group"><label>Wiek min.</label><input required type="number" value={movieData.minimumAge} onChange={e => setMovieData({...movieData, minimumAge: e.target.value})} /></div>
-                </div>
-                <div className="form-row">
-                  <div className="input-group"><label>Data premiery</label><input required type="date" value={movieData.releaseDate} onChange={e => setMovieData({...movieData, releaseDate: e.target.value})} /></div>
-                  <div className="input-group">
-                    <label>Wersja</label>
-                    <select value={movieData.languageVersion} onChange={e => setMovieData({...movieData, languageVersion: e.target.value})}>
-                      <option value="Napisy PL">Napisy PL</option><option value="Dubbing PL">Dubbing PL</option><option value="Lektor PL">Lektor PL</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="input-group"><label>Obsada</label><input required type="text" value={movieData.mainCast} onChange={e => setMovieData({...movieData, mainCast: e.target.value})} /></div>
+              <div className="input-group">
+                <label>Tytuł filmu</label>
+                <input required type="text" value={movieData.title} onChange={e => setMovieData({...movieData, title: e.target.value})} />
               </div>
+
+              {/* RZĄD 1: GATUNEK I REŻYSER */}
+              <div className="form-row">
+                <div className="input-group">
+                  <label>Gatunek (np. Akcja, Komedia)</label>
+                  <input required type="text" value={movieData.genres} onChange={e => setMovieData({...movieData, genres: e.target.value})} />
+                </div>
+                <div className="input-group">
+                  <label>Reżyser</label>
+                  <input required type="text" value={movieData.director} onChange={e => setMovieData({...movieData, director: e.target.value})} />
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label>Obsada (Główni aktorzy)</label>
+                <input required type="text" value={movieData.mainCast} onChange={e => setMovieData({...movieData, mainCast: e.target.value})} />
+              </div>
+
+              {/* RZĄD 2: DANE TECHNICZNE */}
+              <div className="form-row">
+                <div className="input-group"><label>Czas trwania (min)</label><input required type="number" value={movieData.durationMin} onChange={e => setMovieData({...movieData, durationMin: e.target.value})} /></div>
+                <div className="input-group"><label>Wiek min.</label><input required type="number" value={movieData.minimumAge} onChange={e => setMovieData({...movieData, minimumAge: e.target.value})} /></div>
+              </div>
+
+              {/* RZĄD 3: PREMIERA I WERSJA */}
+              <div className="form-row">
+                <div className="input-group"><label>Data premiery</label><input required type="date" value={movieData.releaseDate} onChange={e => setMovieData({...movieData, releaseDate: e.target.value})} /></div>
+                <div className="input-group">
+                  <label>Wersja</label>
+                  <select value={movieData.languageVersion} onChange={e => setMovieData({...movieData, languageVersion: e.target.value})}>
+                    <option value="Napisy PL">Napisy PL</option><option value="Dubbing PL">Dubbing PL</option><option value="Lektor PL">Lektor PL</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* OPISY NA SAMYM DOLE (wymagają najwięcej miejsca) */}
+              <div className="input-group">
+                <label>Krótki opis (Karta w repertuarze)</label>
+                <textarea required rows="2" value={movieData.shortDescription} onChange={e => setMovieData({...movieData, shortDescription: e.target.value})}></textarea>
+              </div>
+
+              <div className="input-group">
+                <label>Pełny opis (Strona szczegółów filmu)</label>
+                <textarea required rows="5" value={movieData.fullDescription} onChange={e => setMovieData({...movieData, fullDescription: e.target.value})}></textarea>
+              </div>
+            </div>
               <div className="upload-column">
                 <h3>Plakat filmu (Cloudinary)</h3>
                 <ImageUpload onImageUploaded={handlePosterUploaded} />
@@ -238,9 +291,9 @@ const AdminPanel = () => {
                   {movieData.posterUrl ? "Plakat wgrany!" : "Czekam na plakat..."}
                 </div>
               </div>
-            </div>
+                </div>
             <button type="submit" className="cyber-btn admin-submit" disabled={isSubmitting}>
-              {isSubmitting ? "ZAPISYWANIE..." : "➕ DODAJ FILM"}
+              {isSubmitting ? "ZAPISYWANIE..." : "DODAJ FILM"}
             </button>
           </form>
         )}
@@ -275,7 +328,7 @@ const AdminPanel = () => {
                 </div>
              </div>
              <button type="submit" className="cyber-btn admin-submit" disabled={isSubmitting}>
-              {isSubmitting ? "ZAPISYWANIE..." : "📅 ZAPLANUJ SEANS"}
+              {isSubmitting ? "ZAPISYWANIE..." : "ZAPLANUJ SEANS"}
             </button>
           </form>
         )}
@@ -283,6 +336,29 @@ const AdminPanel = () => {
         {/* ================= ZAKŁADKA 3: UŻYTKOWNICY ================= */}
         {activeTab === 'users' && (
           <div className="admin-users-section">
+            
+            {/* --- PASEK WYSZUKIWANIA --- */}
+            <div className="search-bar-wrapper" style={{ marginBottom: '20px' }}>
+              <input
+                type="text"
+                placeholder="Szukaj po e-mailu, imieniu lub nazwisku..."
+                value={userSearchQuery}
+                onChange={(e) => {
+                  setUserSearchQuery(e.target.value);
+                  setCurrentPage(1); // UWAGA: Resetujemy na 1. stronę przy wpisywaniu!
+                }}
+                className="search-input"
+                style={{ 
+                  width: '100%', 
+                  padding: '15px', 
+                  borderRadius: '8px', 
+                  background: 'rgba(255, 255, 255, 0.05)', 
+                  color: 'white', 
+                  border: '1px solid #444',
+                  fontSize: '16px'
+                }}
+              />
+            </div>
             <table className="users-table">
               <thead>
                 <tr>
@@ -303,7 +379,7 @@ const AdminPanel = () => {
                     <td>
                       <div style={{ display: 'flex', gap: '10px' }}>
                         <button className="action-btn" style={{ background: '#333', color: 'gold' }} onClick={() => handleManageTickets(u)}>
-                          🎟️ Bilety
+                          Bilety
                         </button>
                         <button className="action-btn delete" onClick={() => handleDeleteUser(u.id)}>
                           Usuń Konto

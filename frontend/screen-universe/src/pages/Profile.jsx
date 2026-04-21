@@ -148,7 +148,7 @@ const Profile = () => {
           
           {/* NOWY PRZYCISK WYLOGOWANIA */}
           <li onClick={handleLogout} style={{ color: '#ff4d4d', marginTop: '20px', borderTop: '1px solid #333', paddingTop: '15px' }}>
-            Logout 🚪
+            Logout
           </li>
         </ul>
       </div>
