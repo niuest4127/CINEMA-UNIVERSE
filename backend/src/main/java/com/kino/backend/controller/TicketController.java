@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -82,6 +86,37 @@ public class TicketController {
     public List<Ticket> getTicketsForUser(@PathVariable Long userId) {
         // Używamy metody, którą dodaliśmy do repozytorium w poprzednim kroku
         return ticketRepository.findByUserId(userId);
+    }
+    @GetMapping("/my/active")
+    public Page<Ticket> getMyActiveTickets(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        String userEmail = authentication.getName();
+        Pageable pageable = PageRequest.of(page, size);
+
+        // ZAMRAŻAMY CZAS NA POTRZEBY TESTÓW (Zgodnie z MOCK_TODAY w React)
+        LocalDateTime mockNow = LocalDateTime.of(2026, 4, 1, 11, 50);
+
+        // Baza użyje teraz 1 kwietnia do oceniania, czy seans jest w przyszłości
+        return ticketRepository.findMyActiveTickets(userEmail, mockNow, pageable);
+    }
+
+    @GetMapping("/my/history")
+    public Page<Ticket> getMyHistoryTickets(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        String userEmail = authentication.getName();
+        Pageable pageable = PageRequest.of(page, size);
+
+        // ZAMRAŻAMY CZAS NA POTRZEBY TESTÓW (Zgodnie z MOCK_TODAY w React)
+        LocalDateTime mockNow = LocalDateTime.of(2026, 4, 1, 11, 50);
+
+        // Baza użyje teraz 1 kwietnia do oceniania, czy seans jest w przeszłości
+        return ticketRepository.findMyHistoryTickets(userEmail, mockNow, pageable);
     }
 
 }

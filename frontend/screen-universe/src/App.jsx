@@ -10,12 +10,13 @@ import AdminPanel  from './pages/AdminPanel';
 import Profile from './pages/Profile';
 import MovieDetails from './pages/MovieDetails'; // Dawne ScreeningDetails
 import SeatSelection from './pages/SeatSelection'; // Nowy komponent do biletów
-
+import ScrollToTop from './components/ScrollToTop';
 function App() {
   return (
     // Owijamy wszystko AuthProviderem
     <AuthProvider>
       <BrowserRouter>
+      <ScrollToTop />
         <Routes>
           <Route path="/" element={<MainLayout />}>
             {/* Twoje dotychczasowe ścieżki */}
