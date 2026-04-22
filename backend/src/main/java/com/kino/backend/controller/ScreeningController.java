@@ -4,7 +4,9 @@ import com.kino.backend.model.Screening;
 import com.kino.backend.repository.ScreeningRepository;
 import org.springframework.http.ResponseEntity; // DODAJ TEN IMPORT
 import org.springframework.web.bind.annotation.*;
-
+import com.kino.backend.repository.TicketRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @RestController
@@ -13,7 +15,8 @@ import java.util.List;
 public class ScreeningController {
 
     private final ScreeningRepository screeningRepository;
-
+    @Autowired
+    private TicketRepository ticketRepository;
     public ScreeningController(ScreeningRepository screeningRepository) {
         this.screeningRepository = screeningRepository;
     }
@@ -44,5 +47,17 @@ public class ScreeningController {
                 // Tutaj opcjonalnie możesz dodać filtr: .filter(s -> s.getStartTime().isAfter(LocalDateTime.now()))
                 .sorted((s1, s2) -> s1.getStartTime().compareTo(s2.getStartTime()))
                 .toList();
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> deleteScreening(@PathVariable Long id) {
+        // 1. Najpierw usuwamy wszystkie powiązane bilety, aby odblokować relację bazy danych
+        ticketRepository.deleteByScreeningId(id);
+
+        // 2. Teraz możemy bezpiecznie usunąć sam seans
+        screeningRepository.deleteById(id);
+
+        return ResponseEntity.ok().build();
     }
 }

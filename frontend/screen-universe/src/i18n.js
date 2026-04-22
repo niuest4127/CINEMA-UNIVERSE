@@ -26,7 +26,7 @@ const resources = {
         activeTab: "Active Tickets",
         historyTab: "Ticket History",
         settingsTab: "Account Settings",
-        logoutBtn: "Logout 🚪",
+        logoutBtn: "Logout",
         upcomingMovies: "Your Upcoming Movies",
         noActiveTickets: "No active tickets on this page.",
         room: "Room",
@@ -65,7 +65,17 @@ const resources = {
         defaultFirstName: "Cinema",
         defaultLastName: "Fan",
         atTime: "at",
-        of: "of"
+        of: "of",
+        ticketId: "Ticket ID",
+screeningId: "Screening ID",
+status: "Status",
+logoutBtn: "Logout",
+returnTicketTitle: "Cancel ticket?",
+returnTicketText: "Are you sure you want to return this ticket?",
+confirmReturn: "Return ticket",
+cancel: "Cancel",
+showtime: "Showtime",
+downloadSuccess: "PDF downloaded successfully!"
       },
       seatSelection: {
         loadingRoom: "Loading cinema room...",
@@ -256,7 +266,17 @@ const resources = {
         defaultFirstName: "Kino",
         defaultLastName: "Maniak",
         atTime: "o",
-        of: "z"
+        of: "z",
+        ticketId: "ID biletu",
+screeningId: "ID seansu",
+status: "Status",
+logoutBtn: "Wyloguj się 🚪",
+returnTicketTitle: "Anulować bilet?",
+returnTicketText: "Czy na pewno chcesz zwrócić ten bilet?",
+confirmReturn: "Zwróć bilet",
+cancel: "Anuluj",
+showtime: "Seans",
+downloadSuccess: "PDF został pobrany!"
       },
       seatSelection: {
         loadingRoom: "Wczytywanie sali kinowej...",

@@ -5,6 +5,8 @@
   min-height: 85vh;
   background-color: #050505;
   font-family: "Poppins", sans-serif;
+  max-width: 1680px;
+  margin: 0px auto;
 }
 
 .loading-msg {
@@ -38,7 +40,8 @@
 
 /* PLAKAT */
 .details-poster-wrapper {
-  flex: 0 0 550px; /* Stała szerokość plakatu na komputerach */
+  flex: 0 0 25%; /* Stała szerokość plakatu na komputerach */
+  min-width: 250px;
 }
 
 .details-poster {

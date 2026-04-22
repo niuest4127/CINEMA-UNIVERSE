@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param; // DODANE
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime; // DODANE
 import java.util.List;
 
@@ -28,4 +28,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     // 2. Historia biletów (Status ANULOWANY lub seans w przeszłości)
     @Query("SELECT t FROM Ticket t WHERE t.user.email = :email AND (t.status = 'ANULOWANY' OR t.screening.startTime <= :now) ORDER BY t.screening.startTime DESC")
     Page<Ticket> findMyHistoryTickets(@Param("email") String email, @Param("now") LocalDateTime now, Pageable pageable);
+
+
+    @Transactional
+    void deleteByScreeningId(Long screeningId);
 }
