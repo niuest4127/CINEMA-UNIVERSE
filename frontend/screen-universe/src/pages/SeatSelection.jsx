@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { useTranslation } from 'react-i18next'; // 1. Dodany import
+import { useTranslation } from 'react-i18next'; 
 import './SeatSelection.css';
 
 const SeatSelection = () => {
@@ -9,30 +9,29 @@ const SeatSelection = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useContext(AuthContext);
-  const { t, i18n } = useTranslation(); // 2. Wywołanie funkcji
+  const { t, i18n } = useTranslation();
 
   const [screening, setScreening] = useState(null);
   const [selectedSeats, setSelectedSeats] = useState([]); 
   const [occupiedSeats, setOccupiedSeats] = useState([]); 
   const [loading, setLoading] = useState(true);
 
-  // --- NOWE STANY DO PŁATNOŚCI ---
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState('idle'); // 'idle' | 'processing' | 'success'
+  const [paymentStatus, setPaymentStatus] = useState('idle'); 
 
-  // Dynamiczny język do wyświetlania dat
+
   const currentLocale = i18n.language === 'pl' ? 'pl-PL' : 'en-US';
 
   useEffect(() => {
-    // KROK 1: Sprawdzamy, czy wracamy z logowania i czy mieliśmy wybrane miejsca
+
     const savedSeats = sessionStorage.getItem(`savedSeats_${screeningId}`);
     if (savedSeats) {
       setSelectedSeats(JSON.parse(savedSeats));
-      sessionStorage.removeItem(`savedSeats_${screeningId}`); // Czyścimy pamięć
-      setIsModalOpen(true); // Od razu otwieramy okienko płatności!
+      sessionStorage.removeItem(`savedSeats_${screeningId}`); 
+      setIsModalOpen(true); 
     }
 
-    // KROK 2: Pobieramy dane z bazy
+
     Promise.all([
       fetch(`http://localhost:8080/api/screenings/${screeningId}`).then(res => res.json()),
       fetch(`http://localhost:8080/api/tickets/screening/${screeningId}/taken-seats`).then(res => res.json())
@@ -69,27 +68,27 @@ const SeatSelection = () => {
     }
   };
 
-  // --- KROK 1: Kliknięcie BUY TICKETS na dole ekranu ---
+
   const handleOpenSummary = () => {
     if (!user) {
-      // Zapisujemy fotele do pamięci przeglądarki przed wylotem do logowania
+
       sessionStorage.setItem(`savedSeats_${screeningId}`, JSON.stringify(selectedSeats));
       navigate('/logowanie', { state: { from: location.pathname } });
       return;
     }
-    // Jeśli zalogowany - otwieramy ładne podsumowanie
+
     setIsModalOpen(true);
   };
 
-  // --- KROK 2: Faktyczna transakcja w okienku ---
+
   const confirmPayment = async () => {
     setPaymentStatus('processing');
 
     try {
-      // Symulacja połączenia z bankiem (dla picu, 2.5 sekundy)
+
       await new Promise(resolve => setTimeout(resolve, 2500));
 
-      // Faktyczne uderzenie do Javy
+
       const purchasePromises = selectedSeats.map(seatLabel => {
         return fetch('http://localhost:8080/api/tickets', {
           method: 'POST',
@@ -109,11 +108,10 @@ const SeatSelection = () => {
       });
 
       await Promise.all(purchasePromises);
-      
-      // Sukces!
+
       setPaymentStatus('success');
       
-      // Po 3 sekundach zamykamy okienko i odświeżamy salę
+
       setTimeout(() => {
         setIsModalOpen(false);
         setPaymentStatus('idle');
@@ -127,7 +125,7 @@ const SeatSelection = () => {
       alert(err.message);
       setPaymentStatus('idle');
       setIsModalOpen(false);
-      // Odświeżamy, bo ktoś nam zwinął miejsce sprzed nosa
+
       const newTakenSeats = await fetch(`http://localhost:8080/api/tickets/screening/${screeningId}/taken-seats`).then(res => res.json());
       setOccupiedSeats(newTakenSeats);
     }
@@ -204,7 +202,6 @@ const SeatSelection = () => {
         </div>
       )}
 
-      {/* --- OKIENKO PODSUMOWANIA (MODAL) --- */}
       {isModalOpen && (
         <div className="payment-overlay">
           <div className="payment-modal glass-panel">

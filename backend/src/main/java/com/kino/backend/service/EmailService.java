@@ -18,13 +18,12 @@ public class EmailService {
     public void sendTicketWithAttachment(String to, String movieTitle, byte[] pdfContent) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true); // true = multipart
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             helper.setTo(to);
             helper.setSubject("Twój bilet na film: " + movieTitle);
             helper.setText("Dziękujemy za zakup biletów w Screen Universe! Twój bilet znajdziesz w załączniku.");
 
-            // Dodajemy PDF jako załącznik
             helper.addAttachment("Bilet_" + movieTitle + ".pdf", new ByteArrayResource(pdfContent));
 
             mailSender.send(message);

@@ -1,16 +1,16 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { useTranslation } from 'react-i18next'; // 1. Dodany import
+import { useTranslation } from 'react-i18next'; 
 import './Auth.css'; 
 
 const Auth = () => {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   const location = useLocation();
-  const { t } = useTranslation(); // 2. Wywołanie funkcji
+  const { t } = useTranslation(); 
 
-  // Stan formularza
+
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
@@ -21,12 +21,12 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const fromPath = location.state?.from || '/repertuar';
 
-  // Obsługa wpisywania tekstu w inputy
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Wysyłanie formularza
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -34,7 +34,7 @@ const Auth = () => {
 
     try {
       if (isLoginMode) {
-        // --- LOGIKA LOGOWANIA (Basic Auth) ---
+
         const basicAuthToken = 'Basic ' + btoa(formData.email + ':' + formData.password);
 
         const response = await fetch('http://localhost:8080/api/users/login', {
@@ -52,7 +52,7 @@ const Auth = () => {
         navigate(fromPath);
 
       } else {
-        // --- LOGIKA REJESTRACJI ---
+
         const response = await fetch('http://localhost:8080/api/users/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -79,7 +79,7 @@ const Auth = () => {
     <div className="auth-container">
       <div className="auth-card glass-panel">
         <h2 className="auth-title">
-          {/* 3. Podmiana napisów */}
+
           {isLoginMode ? t('auth.loginTitle') : t('auth.registerTitle')}
         </h2>
         

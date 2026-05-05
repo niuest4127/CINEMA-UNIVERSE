@@ -4,7 +4,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // KLUCZOWE
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const storedUser = localStorage.getItem('cinema_user');
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
       setUser(JSON.parse(storedUser));
     }
 
-    setLoading(false); // 🔥 KONIEC sprawdzania
+    setLoading(false); 
   }, []);
 
   const login = (userData) => {

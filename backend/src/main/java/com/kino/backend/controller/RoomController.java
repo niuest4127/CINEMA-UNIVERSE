@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/rooms") // Poprawione na liczbę mnogą
+@RequestMapping("/api/rooms")
 @CrossOrigin
 public class RoomController {
 
     private final RoomRepository roomRepository;
 
-    // Poprawiona nazwa w nawiasie
+
     public RoomController(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
     }

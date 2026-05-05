@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'; // 1. Dodany import
+import { useTranslation } from 'react-i18next'; 
 import MovieCardSkeleton from '../components/MovieCardSkeleton';
 import './Repertuar.css';
 
@@ -15,7 +15,7 @@ const LazyPoster = ({ src, alt, onClick }) => {
       onClick={onClick}
       style={{ cursor: 'pointer', position: 'relative', width: '100%', height: '100%' }}
     >
-      {/* 1. SZKIELET: Świeci się, dopóki isLoaded jest false */}
+   
       {!isLoaded && (
         <div 
           className="skeleton-poster animate-pulse" 
@@ -23,11 +23,11 @@ const LazyPoster = ({ src, alt, onClick }) => {
         ></div>
       )}
       
-      {/* 2. PRAWDZIWY OBRAZEK: Ładuje się w tle, pokazuje się z ładnym przejściem gdy jest gotowy */}
+
       <img
         src={src}
         alt={alt}
-        onLoad={() => setIsLoaded(true)} // Magia: Odpala się, gdy pobieranie pliku się zakończy!
+        onLoad={() => setIsLoaded(true)} 
         style={{ 
           opacity: isLoaded ? 1 : 0, 
           transition: 'opacity 0.5s ease-in-out', 
@@ -42,9 +42,9 @@ const LazyPoster = ({ src, alt, onClick }) => {
 };
 
 const Repertuar = () => {
-  const MOCK_TODAY = new Date('2026-04-01T10:00:00');
+  const MOCK_TODAY = new Date();
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation(); // 2. Wywołanie funkcji (oraz i18n do locale)
+  const { t, i18n } = useTranslation(); 
 
   const [screenings, setScreenings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +54,7 @@ const Repertuar = () => {
     MOCK_TODAY.toISOString().split('T')[0]
   );
 
-  // Dynamiczny język do wyświetlania dat
+
   const currentLocale = i18n.language === 'pl' ? 'pl-PL' : 'en-US';
 
   // 🔥 FETCH + LOADING FIX
@@ -71,7 +71,7 @@ const Repertuar = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // 🔥 DATY
+
   const getNext7Days = () => {
     const days = [];
 
@@ -96,7 +96,7 @@ const Repertuar = () => {
 
   const datesList = getNext7Days();
 
-  // 🔥 FILTROWANIE
+
   const filteredScreenings = screenings.filter(screening => {
     const screeningDate = screening.startTime.split('T')[0];
     const isSameDate = screeningDate === selectedDate;
@@ -108,7 +108,6 @@ const Repertuar = () => {
     return isSameDate && matchesSearch;
   });
 
-  // 🔥 GRUPOWANIE
   const groupedByMovie = filteredScreenings.reduce((acc, screening) => {
     const movieId = screening.movie.id;
 
@@ -129,10 +128,10 @@ const Repertuar = () => {
   return (
     <div className="repertuar-container">
 
-      {/* 3. Podmiana napisów */}
+
       <h1 className="page-title">{t('repertoire.title')}</h1>
 
-      {/* 🔍 SEARCH */}
+
       <div className="search-bar-wrapper">
         <input
           type="text"
@@ -143,7 +142,6 @@ const Repertuar = () => {
         />
       </div>
 
-      {/* 📅 DATE PICKER */}
       <div className="date-picker-wrapper">
         {datesList.map(day => (
           <button
@@ -159,11 +157,11 @@ const Repertuar = () => {
         ))}
       </div>
 
-      {/* 🎬 LISTA */}
+
       <div className="movie-repertoire-list">
 
         {loading ? (
-          // 🔥 SKELETONY
+  
           Array.from({ length: 4 }).map((_, i) => (
             <MovieCardSkeleton key={i} />
           ))
@@ -175,7 +173,6 @@ const Repertuar = () => {
           movieList.map(({ movie, times }) => (
             <div key={movie.id} className="repertoire-card">
 
-              {/* POSTER */}
               <div className="poster-side">
                 <LazyPoster
                   src={movie.posterUrl}
@@ -184,7 +181,7 @@ const Repertuar = () => {
                 />
               </div>
 
-              {/* INFO */}
+    
               <div className="info-side">
                 <h2 onClick={() => navigate(`/movie/${movie.id}`)}>
                   {movie.title}
@@ -202,7 +199,6 @@ const Repertuar = () => {
 
                 <hr className="divider" />
 
-                {/* GODZINY */}
                 <div className="times-container">
                   {times.map(screening => (
                     <button

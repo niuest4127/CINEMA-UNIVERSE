@@ -10,7 +10,7 @@ function Footer() {
   const { t } = useTranslation();
 
   return (
-    // Dodajemy klasę global-footer
+
     <footer className="global-footer"> 
       <div className="left">
         <Link to="/">
@@ -30,7 +30,7 @@ function Footer() {
         </div>
         <div className="visitUs">
           <h5><strong>{t('footer.visitUs')}</strong></h5>
-          {/* Adres nie znajduje się w pliku i18n.js - zostawiam na sztywno zgodnie z instrukcją */}
+
           <h6>Łodź Wroblewskiego 19</h6>
         </div>
         <div className="contactUs">

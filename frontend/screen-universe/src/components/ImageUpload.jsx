@@ -4,9 +4,9 @@ const ImageUpload = ({ onImageUploaded }) => {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
 
-  // 🔴 TUTAJ WPISZ SWOJE DANE Z CLOUDINARY 🔴
+
   const CLOUD_NAME = "dfhjg3okc"; 
-  const UPLOAD_PRESET = "kino_preset"; // Np. kino_preset
+  const UPLOAD_PRESET = "kino_preset"; 
 
   const uploadImage = async (e) => {
     const file = e.target.files[0];
@@ -14,14 +14,13 @@ const ImageUpload = ({ onImageUploaded }) => {
 
     setLoading(true);
 
-    // Tworzymy paczkę z plikiem i hasłem(presetem) dla chmury
     const data = new FormData();
     data.append("file", file);
     data.append("upload_preset", UPLOAD_PRESET);
     data.append("cloud_name", CLOUD_NAME);
 
     try {
-      // Uderzamy prosto do API Cloudinary!
+
       const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
         method: "POST",
         body: data,
@@ -29,10 +28,10 @@ const ImageUpload = ({ onImageUploaded }) => {
 
       const uploadedImage = await res.json();
       
-      // Cloudinary oddaje nam piękny, bezpieczny URL (secure_url)
+ 
       setPreview(uploadedImage.secure_url);
       
-      // Przekazujemy ten URL wyżej (do formularza dodawania filmu)
+
       onImageUploaded(uploadedImage.secure_url);
 
     } catch (err) {

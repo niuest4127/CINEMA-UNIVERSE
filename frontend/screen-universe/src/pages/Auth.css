@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 120px 5% 50px 5%; /* Odstęp od Navbara */
+  padding: 120px 5% 50px 5%; 
   background-color: #050505;
   background-image: url("/src/assets/loginBg.png");
   font-family: "Poppins", sans-serif;
@@ -15,7 +15,7 @@
   padding: 40px;
   border-radius: 20px;
   text-align: center;
-  /* Glassmorphism */
+
   background: rgba(0, 0, 0, 0.685);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
@@ -88,7 +88,7 @@
 .auth-submit-btn {
   width: 100%;
   margin-top: 10px;
-  padding: 20px !important; /* Mniejsze paddingi dla formularza niż oryginalny przycisk */
+  padding: 20px !important; 
 }
 
 .auth-switch {

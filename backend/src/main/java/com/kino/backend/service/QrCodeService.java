@@ -13,7 +13,7 @@ public class QrCodeService {
 
     public byte[] generateQrCodeImage(String text) throws Exception {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        // Generujemy macierz bitową (rozmiar 250x250 px)
+
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 250, 250);
 
         ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();

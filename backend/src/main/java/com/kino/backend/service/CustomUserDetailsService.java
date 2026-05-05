@@ -18,15 +18,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // 1. Szukamy naszego użytkownika w bazie (lub rzucamy błąd, jeśli go nie ma)
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Nie znaleziono użytkownika: " + email));
 
-        // 2. Tłumaczymy naszego Usera na obiekt UserDetails, który rozumie Spring Security
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
-                .password(user.getPassword()) // Tu siedzi ten długi zaszyfrowany ciąg znaków!
-                .roles(user.getRole())        // Mówimy ochroniarzowi: "To jest ADMIN" albo "To jest USER"
+                .password(user.getPassword())
+                .roles(user.getRole())
                 .build();
     }
 }

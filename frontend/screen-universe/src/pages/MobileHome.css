@@ -4,32 +4,32 @@
   background-color: #000000;
   color: #ffffff;
   min-height: 100vh;
-  /* Odstęp na górze, żeby Twój Navbar nie zasłonił pierwszego tekstu */
+
   padding-top: 80px; 
   overflow-x: hidden;
   font-family: "Poppins", sans-serif;
 }
 
 .mobile-section {
-  min-height: 100vh; /* Tego brakowało! Każda sekcja to pełen ekran */
+  min-height: 100vh; 
   padding: 40px 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Dodajemy to, by zawartość była idealnie na środku ekranu */
+  justify-content: center; 
   gap: 20px;
   border-bottom: 1px solid rgba(255, 0, 0, 0.2);
 }
 
-/* SEKCJA 1: HERO */
+
 .hero-section {
   min-height: 70vh;
   justify-content: center;
   background: radial-gradient(circle at center, rgba(255,0,0,0.15) 0%, rgba(0,0,0,1) 70%);
 }
 
-/* SEKCJA 2: IKONKI */
+
 .features-grid {
   display: flex;
   flex-direction: column;
@@ -42,35 +42,33 @@
   margin-bottom: 10px;
 }
 
-/* SEKCJA 5: PREMIERY (Netflix Style) */
 .premieres-section {
   position: relative;
-  min-height: 100vh; /* Zajmuje cały ekran, ale w razie ogromu tekstu uciągnie się w dół */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 0; /* Wyłączamy domyślny padding, żeby tło dotykało krawędzi */
-  overflow: hidden; /* Ucinamy wylewające się, rozmyte tło */
+  padding: 0; 
+  overflow: hidden; 
   border-bottom: 1px solid rgba(255, 0, 0, 0.2);
 }
 
-/* Tło z plakatem - rozmyte i przyciemnione */
 .blurred-poster-bg {
   position: absolute;
   top: -10%;
   left: -10%;
-  width: 120%; /* Większe niż ekran, żeby zniwelować białe krawędzie od rozmycia */
+  width: 120%; 
   height: 120%;
   background-size: cover;
   background-position: center;
-  filter: blur(10px) brightness(0.35); /* Rozmycie i przyciemnienie, by tekst był czytelny! */
+  filter: blur(10px) brightness(0.35); 
   z-index: 1;
-  transition: background-image 0.5s ease-in-out; /* Płynne przenikanie teł! */
+  transition: background-image 0.5s ease-in-out; 
 }
 
-/* Pudełko na zawartość (chroni przed wpadnięciem pod tło) */
+
 .premieres-content {
   position: relative;
-  z-index: 2; /* Musi być wyżej niż rozmyte tło! */
+  z-index: 2; 
   width: 100%;
   height: 100%;
   padding: 40px 20px;
@@ -85,31 +83,31 @@
   justify-content: center;
   gap: 10px;
   width: 100%;
-  margin: 20px 0 40px 0; /* Większy margines dolny pod przyciskami na plakat */
+  margin: 20px 0 40px 0; 
 }
 
-/* SZKLANA KARTA Z INFORMACJAMI */
+
 .mobile-movie-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(0, 0, 0, 0.7); /* Półprzezroczysty, głęboki czarny */
-  backdrop-filter: blur(10px); /* Dodatkowe szkło na karcie */
+  background: rgba(0, 0, 0, 0.7); 
+  backdrop-filter: blur(10px); 
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: 0 20px 20px 20px; /* Brak paddingu na górze przez plakat */
+  padding: 0 20px 20px 20px; 
   width: 100%;
   height: 80%;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
 }
 
-/* Zmniejszony plakat wystający nad kartę */
+
 .mobile-poster-small {
   width: 50%;
   border-radius: 8px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-  margin-top: -30px; /* Trik UX: Plakat "wyskakuje" z karty do góry! */
+  margin-top: -30px; 
   margin-bottom: 15px;
   transition: opacity 0.3s;
 }
@@ -125,23 +123,23 @@
   margin-bottom: 10px;
 }
 
-/* Inteligentne ucinanie opisu */
+
 .movie-desc-small {
   font-size: 13px;
   color: #ddd;
   line-height: 1.5;
   margin-bottom: 15px;
-  /* Ten kod sprawia, że jeśli opis jest za długi, React ucina go po 4 linijce i dodaje "..." */
+
   display: -webkit-box;
   -webkit-line-clamp: 4; 
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* Kontener na reżysera i obsadę */
+
 .movie-crew {
   text-align: left;
-  background: rgba(255, 255, 255, 0.05); /* Lekko jaśniejsze pudełeczko na dane */
+  background: rgba(255, 255, 255, 0.05); 
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -149,7 +147,7 @@
 
 .movie-crew p {
   margin: 4px 0;
-  font-size: 12px; /* Drobny, nienachalny druczek */
+  font-size: 12px; 
   color: #ccc;
 }
 .movie-crew p strong {
@@ -159,10 +157,9 @@
 .small-btn {
   padding: 12px 30px;
   font-size: 14px;
-  width: 100%; /* Przycisk Kup Bilet na całą szerokość karty! */
+  width: 100%; 
 }
 
-/* SEKCJA 6: STATYSTYKI */
 .mobile-stats-grid {
   display: flex;
   flex-direction: column;
@@ -181,7 +178,7 @@
   background-color: transparent;
   color: #888;
   border: none;
-  border-bottom: 2px solid transparent; /* Ukryta kreska na start */
+  border-bottom: 2px solid transparent; 
   padding: 10px 15px;
   font-family: "Poppins", sans-serif;
   font-weight: 600;
@@ -193,14 +190,14 @@
 .premiereBtn:hover{
   color: #fff;
 
-  /* Ten sam efekt co na desktopie - czerwona poświata od dołu */
+
   background: radial-gradient(circle at bottom, rgba(255, 0, 0, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
-  transform: scale(1.05); /* Lekkie powiększenie aktywnego filmu */
+  transform: scale(1.05); 
 }
 .active-btn {
   color: #fff;
-  border-bottom: 2px solid red; /* Charakterystyczne kinowe podkreślenie */
-  /* Ten sam efekt co na desktopie - czerwona poświata od dołu */
+  border-bottom: 2px solid red; 
+
   background: radial-gradient(circle at bottom, rgba(255, 0, 0, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
-  transform: scale(1.05); /* Lekkie powiększenie aktywnego filmu */
+  transform: scale(1.05); 
 }

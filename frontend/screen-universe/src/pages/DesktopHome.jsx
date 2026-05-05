@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next"; // 1. Dodany import
+import { useTranslation } from "react-i18next"; 
 import "./Home.css";
 import videoBg from "../assets/videoBg.webm";
 import audioIcon from "/audioIcon/icons8-audio-wave-gradient-96.png";
@@ -11,38 +11,33 @@ import userIcon from "/usericon/icons8-user-default-gradient-96.png";
 import starIcon from "/staricon/icons8-star-gradient-96.png";
 import videoBottom from "../assets/videoBottom.webm";
 
-// --- IMPORTUJEMY NASZ LOADER ---
 import GlobalCinemaLoader from "../components/GlobalCinemaLoader"; 
 
 const VideoScroller = () => {
-  const { t } = useTranslation(); // 2. Inicjalizacja hooka
+  const { t } = useTranslation(); 
 
   const [movies, setMovies] = useState([]); 
   const [selectedMovieIndex, setSelectedMovieIndex] = useState(0); 
-  
-  // --- NOWY STAN: Czy strona pobiera dane? ---
+
   const [isPageLoading, setIsPageLoading] = useState(true); 
 
-  // Pobieranie filmów i sterowanie Loaderem
+
   useEffect(() => {
-    setIsPageLoading(true); // Na starcie zawsze włączamy loader
+    setIsPageLoading(true); 
 
     fetch('http://localhost:8080/api/movies')
       .then((res) => res.json())
       .then((data) => {
         const sortedMovies = data.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
         setMovies(sortedMovies.slice(0, 4));
-        
-        // WYŁĄCZAMY LOADER po poprawnym pobraniu!
-        // Używamy minimalnego opóźnienia (np. 500ms), by zredukować "mruganie" loadera 
-        // przy bardzo szybkim internecie i upewnić się, że wideo w tle zdąży załadować klatkę.
+
         setTimeout(() => setIsPageLoading(false), 1500);
       })
       .catch((err) => {
         console.error("Błąd pobierania filmów:", err);
-        setIsPageLoading(false); // W przypadku błędu też musimy go wyłączyć, by strona nie zacięła się na zawsze
+        setIsPageLoading(false); 
       });
-  }, []); // [] oznacza, że wykona się za każdym razem, gdy użytkownik wejdzie na tę stronę
+  }, []); 
 
 
   const videoRef = useRef(null);
@@ -171,20 +166,18 @@ const animateNumbers = () => {
   numbers.forEach((num) => {
     const target = +num.getAttribute("data-target");
 
-    // 🔥 różne starty
+
     let start = 0;
 
-    if (target >= 11000) start = target - 1000;   // 10000 → 12000
-    else if (target >= 300) start = target - 50;  // 300 → 350
-    else start = 1; // rating
-
-    const duration = 3000; // ms
+    if (target >= 11000) start = target - 1000;   
+    else if (target >= 300) start = target - 50;  
+    else start = 1; 
+    const duration = 3000; 
     const startTime = performance.now();
 
     const update = (currentTime) => {
       const progress = (currentTime - startTime) / duration;
 
-      // 🔥 easing (zwalnia na końcu)
       const easeOut = 1 - Math.pow(1 - progress, 3);
 
       const current = start + (target - start) * easeOut;
@@ -193,7 +186,7 @@ const animateNumbers = () => {
         if (target >= 1000) {
           num.textContent = Math.floor(current).toLocaleString();
         } else if (target < 10) {
-          num.textContent = current.toFixed(1); // rating np 4.9
+          num.textContent = current.toFixed(1); 
         } else {
           num.textContent = Math.floor(current);
         }
@@ -248,10 +241,10 @@ return (
         autoPlay
       />
       
-      {/* Kontener na Twoje sekcje nakładające się na wideo */}
+
       <div ref={containerRef} className="HomeSectionContainer">
         
-        {/* SEKCJA 1 */}
+
         <div 
           data-index={0} 
           ref={(el) => (sectionRefs.current[0] = el)} 
@@ -259,7 +252,7 @@ return (
         >
           <div className="sec1Container">
             <h6>{t('home.welcomeTo')}</h6>
-            {/* Zostawiłem logo SCREEN UNIVERSE jako brand name */}
+
             <h1>SCR<span className="shadow">EE</span>N UNIVERSE</h1>
             <h5>{t('home.sec1Subtitle')}</h5>
             <button className="glassBtn">{t('home.whatIsBtn')}</button>

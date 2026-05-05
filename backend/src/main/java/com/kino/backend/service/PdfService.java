@@ -18,20 +18,20 @@ public class PdfService {
 
     public byte[] generateTicketPdf(Ticket ticket) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Document document = new Document(PageSize.A6); // Mały, zgrabny format biletu
+        Document document = new Document(PageSize.A6);
         PdfWriter.getInstance(document, out);
 
         document.open();
 
-        // Stylizacja nagłówka
+
         Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
         Paragraph title = new Paragraph("SCREEN UNIVERSE TICKET", titleFont);
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);
 
-        document.add(new Paragraph(" ")); // Odstęp
+        document.add(new Paragraph(" "));
 
-        // Dane filmu
+
         document.add(new Paragraph("Movie: " + ticket.getScreening().getMovie().getTitle()));
         document.add(new Paragraph("Date: " + ticket.getScreening().getStartTime()));
         document.add(new Paragraph("Room: " + ticket.getScreening().getRoom().getName()));
@@ -40,7 +40,7 @@ public class PdfService {
 
         document.add(new Paragraph(" "));
 
-        // Generowanie QR (zaszywamy tam ID biletu i miejsce)
+
         String qrData = "TicketID: " + ticket.getId() + " | Seat: " + ticket.getSeatNumber();
         byte[] qrCodeImage = qrCodeService.generateQrCodeImage(qrData);
         Image qrImage = Image.getInstance(qrCodeImage);

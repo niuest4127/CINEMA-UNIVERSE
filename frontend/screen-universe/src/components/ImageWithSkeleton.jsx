@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import './MovieCardSkeleton.css'; // Korzystamy z tych samych stylów pulsowania!
+import './MovieCardSkeleton.css'; 
 
 const ImageWithSkeleton = ({ src, alt, onClick, className }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
     <>
-      {/* 1. Pokazujemy szkielet, dopóki obrazek się nie załaduje */}
+   
       {!isLoaded && (
         <div 
           className={`skeleton-poster animate-pulse ${className}`} 
@@ -15,16 +15,16 @@ const ImageWithSkeleton = ({ src, alt, onClick, className }) => {
         ></div>
       )}
 
-      {/* 2. Ukrywamy prawdziwy obrazek (display: none), aż się nie pobierze */}
+
       <img
         src={src}
         alt={alt}
         onClick={onClick}
         className={className}
         style={isLoaded ? {} : { display: 'none' }}
-        onLoad={() => setIsLoaded(true)} // <-- MAGIA: Gdy przeglądarka ściągnie obrazek, odpala się to!
+        onLoad={() => setIsLoaded(true)}
         onError={(e) => {
-          // Jeśli link do obrazka jest zepsuty, ukrywamy błąd
+
           setIsLoaded(true);
         }}
       />

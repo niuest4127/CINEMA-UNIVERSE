@@ -200,6 +200,17 @@ downloadSuccess: "PDF downloaded successfully!"
         cast: "Cast:",
         duration: "Duration:",
         age: "Age:"
+      },
+      about: {
+        subtitle: "More than a cinema. Your portal to other dimensions.",
+        historyTitle: "Our History",
+        historyP1: "Founded in 2026 by cinematography enthusiasts, Screen Universe was created for one simple reason: to redefine how we experience movies. We didn't want to build just another regular multiplex. We wanted to create a space where the line between reality and the screen blurs.",
+        historyP2: "Thanks to state-of-the-art 4K Laser projectors and Dolby Atmos 360° sound systems, every screening in our cinema is a true journey. We believe that a movie is not just picture and sound - it's emotions best experienced together.",
+        locationTitle: "Where to find us?",
+        addressLabel: "Address:",
+        hoursLabel: "Opening hours:",
+        contactLabel: "Contact:",
+        days: "Mon - Sun"
       }
     }
   },
@@ -401,6 +412,17 @@ downloadSuccess: "PDF został pobrany!"
         cast: "Obsada:",
         duration: "Czas trwania:",
         age: "Wiek:"
+      },
+      about: {
+        subtitle: "Więcej niż kino. Twój portal do innych wymiarów.",
+        historyTitle: "Nasza Historia",
+        historyP1: "Założone w 2026 roku przez pasjonatów kinematografii, Screen Universe powstało z jednego prostego powodu: aby na nowo zdefiniować to, jak doświadczamy filmów. Nie chcieliśmy budować kolejnego zwykłego multipleksu. Chcieliśmy stworzyć przestrzeń, w której zaciera się granica między rzeczywistością a ekranem.",
+        historyP2: "Dzięki najnowocześniejszym projektorom 4K Laser i systemowi nagłośnienia Dolby Atmos 360°, każdy seans w naszym kinie to prawdziwa podróż. Wierzymy, że film to nie tylko obraz i dźwięk – to emocje, które najlepiej przeżywa się wspólnie.",
+        locationTitle: "Gdzie nas znajdziesz?",
+        addressLabel: "Adres:",
+        hoursLabel: "Godziny otwarcia:",
+        contactLabel: "Kontakt:",
+        days: "Pon - Niedz"
       }
     }
   }

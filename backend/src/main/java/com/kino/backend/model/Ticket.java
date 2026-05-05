@@ -10,20 +10,18 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Łączymy z Użytkownikiem
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    // Łączymy z Seansem
     @ManyToOne
     @JoinColumn(name = "screening_id")
     private Screening screening;
 
-    // Numer miejsca wybranego w React (np. "A1", "C4")
+
     private String seatNumber;
 
-    // Status biletu (np. "AKTYWNY", "ANULOWANY") - przyda się do zwrotów!
+
     private String status;
 
     public Ticket() {
@@ -36,7 +34,7 @@ public class Ticket {
         this.status = status;
     }
 
-    // --- Gettery i Settery ---
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

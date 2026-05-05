@@ -13,33 +13,33 @@ public class Movie {
     private String title;
 
     @Column(length = 500)
-    private String shortDescription; // Do kafelków na stronie głównej i repertuaru
+    private String shortDescription;
 
     @Column(length = 2000)
-    private String fullDescription; // Do strony ze szczegółami i wyborem miejsc
+    private String fullDescription;
 
     private Integer durationMin;
 
     private String posterUrl;
 
-    private String director; // Reżyser
+    private String director;
 
-    private String mainCast; // Obsada (np. po przecinku)
+    private String mainCast;
 
-    // LocalDate to typ Javy przeznaczony specjalnie dla samej daty (bez godziny)
+
     private java.time.LocalDate releaseDate;
 
-    // --- NOWE POLA ---
-    private String genres; // np. "Akcja, Komedia"
 
-    private Integer minimumAge; // np. 12, 15, 18
+    private String genres;
 
-    private String languageVersion; // np. "Dubbing PL", "Napisy PL"
-    // Pusty konstruktor (wymagany przez Hibernate)
+    private Integer minimumAge;
+
+    private String languageVersion;
+
     public Movie() {
     }
 
-    // Konstruktor z parametrami (żeby nam było wygodniej tworzyć filmy w kodzie)
+
     public Movie(String title, String shortDescription,String fullDescription,  Integer durationMin, String posterUrl,String director, String mainCast, java.time.LocalDate releaseDate) {
         this.title = title;
         this.shortDescription = shortDescription;

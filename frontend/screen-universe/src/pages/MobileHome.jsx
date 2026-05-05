@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next"; // 1. Dodany import
+import { useTranslation } from "react-i18next";
 import audioIcon from "/audioIcon/icons8-audio-wave-gradient-96.png"
 import lightIcon from "/lightIcon/icons8-light-gradient-96.png"
 import engineIcon from "/engineIcon/icons8-processor-gradient-96.png"
@@ -10,7 +10,7 @@ import Footer from "../components/Footer";
 import './MobileHome.css';
 
 const MobileHome = () => {
-  const { t } = useTranslation(); // 2. Wywołanie funkcji
+  const { t } = useTranslation();
   const [movies, setMovies] = useState([]);
   const [selectedMovieIndex, setSelectedMovieIndex] = useState(0);
 
@@ -26,18 +26,17 @@ const MobileHome = () => {
 
   return (
     <div className="mobile-home-container">
-      
-      {/* SEKCJA 1 */}
+ 
       <section className="mobile-section hero-section">
-        {/* 3. Podmiana napisów */}
+
         <h6>{t('home.welcomeTo')}</h6>
-        {/* Zostawiamy nazwę własną bez zmian */}
+  
         <h1>SCR<span className="shadow">EE</span>N UNIVERSE</h1>
         <p>{t('home.mobileSec1Subtitle')}</p>
         <button className="glassBtn">{t('home.whatIsBtn')}</button>
       </section>
 
-      {/* SEKCJA 2 */}
+
       <section className="mobile-section features-section">
         <h5>{t('home.sec2Title')}</h5>
         <h2>{t('home.mobileSec2Heading')}</h2>
@@ -57,10 +56,10 @@ const MobileHome = () => {
         </div>
       </section>
 
-{/* SEKCJA 5 - PREMIERY */}
+
       <section className="mobile-section premieres-section">
         
-        {/* Dynamiczne, rozmyte tło - renderujemy tylko, gdy filmy są pobrane */}
+
         {movies.length > 0 && (
           <div 
             className="blurred-poster-bg"
@@ -68,7 +67,6 @@ const MobileHome = () => {
           />
         )}
 
-        {/* Zawartość na wierzchu (z-index podbity w CSS) */}
         <div className="premieres-content">
           <h2>{t('home.mobileSec5Heading_part1')}<span className="shadow">{t('home.mobileSec5Heading_shadow')}</span>{t('home.mobileSec5Heading_part2')}</h2>
           
@@ -86,20 +84,20 @@ const MobileHome = () => {
 
           {movies.length > 0 && (
             <div className="mobile-movie-card">
-              {/* Plakat celowo wyciągnięty trochę do góry w CSS */}
+      
               <img src={movies[selectedMovieIndex].posterUrl} alt="Poster" className="mobile-poster-small" />
               
               <div className="mobile-movie-info">
                 <h3 style={{color: 'gold'}}>{movies[selectedMovieIndex].title}</h3>
                 
-                {/* Krótkie metadane obok siebie */}
+       
                 <p className="movie-meta">
                   {movies[selectedMovieIndex].durationMin} min | {movies[selectedMovieIndex].genres} | {movies[selectedMovieIndex].minimumAge}+
                 </p>
                 
                 <p className="movie-desc-small">{movies[selectedMovieIndex].shortDescription}</p>
                 
-                {/* Kontener na reżysera i obsadę */}
+      
                 <div className="movie-crew">
                   <p><strong>{t('home.director')}</strong> {movies[selectedMovieIndex].director}</p>
                   <p><strong>{t('home.cast')}</strong> {movies[selectedMovieIndex].mainCast}</p>
@@ -113,7 +111,7 @@ const MobileHome = () => {
         </div>
       </section>
 
-      {/* SEKCJA 6 - STATYSTYKI */}
+
       <section className="mobile-section stats-section">
         <h2>{t('home.statsTitle')}</h2>
         <div className="mobile-stats-grid">

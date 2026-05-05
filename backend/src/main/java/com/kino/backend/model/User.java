@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users") // Zabezpieczenie przed słowem zastrzeżonym w bazie
+@Table(name = "users")
 public class User {
 
     @Id
@@ -23,9 +23,9 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private String role; // "USER" lub "ADMIN"
+    private String role;
 
-    // --- NOWE DANE ZAKŁADKI PROFIL ---
+
     private String firstName;
 
     private String lastName;
@@ -36,11 +36,11 @@ public class User {
 
     private java.time.LocalDate dateOfBirth;
 
-    // 1. Pusty konstruktor dla Hibernate
+
     public User() {
     }
 
-    // 2. Pełny konstruktor dla nas
+
     public User(String email, String password, String role, String firstName, String lastName, String address, String phoneNumber, java.time.LocalDate dateOfBirth) {
         this.email = email;
         this.password = password;
@@ -52,7 +52,7 @@ public class User {
         this.dateOfBirth = dateOfBirth;
     }
 
-    // --- Gettery i Settery ---
+
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

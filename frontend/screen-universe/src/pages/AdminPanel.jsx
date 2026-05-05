@@ -16,12 +16,11 @@ const AdminPanel = () => {
   const [managingUser, setManagingUser] = useState(null); 
   const [userTickets, setUserTickets] = useState([]);     
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
-  
-  // --- STANY DLA ZAKŁADEK ---
+
   const [moviesList, setMoviesList] = useState([]);
   const [roomsList, setRoomsList] = useState([]);
   const [usersList, setUsersList] = useState([]);
-  const [screeningsList, setScreeningsList] = useState([]); // <--- NOWY STAN DLA TABELI SEANSÓW
+  const [screeningsList, setScreeningsList] = useState([]); 
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -75,7 +74,7 @@ const AdminPanel = () => {
     } catch (err) { alert(err.message); }
   };
 
-  // --- OCHRONA I POBIERANIE DANYCH ---
+
   useEffect(() => {
     if (!authLoading) {
       if (!user || user.role !== 'ADMIN') {
@@ -86,7 +85,7 @@ const AdminPanel = () => {
 
   const fetchAuxiliaryData = async () => {
     try {
-      // 1. Pobieramy również seanse z backendu do nowej tabeli
+
       const [moviesRes, roomsRes, usersRes, screeningsRes] = await Promise.all([
         fetch('http://localhost:8080/api/movies'),
         fetch('http://localhost:8080/api/rooms'), 
@@ -97,7 +96,7 @@ const AdminPanel = () => {
       setRoomsList(await roomsRes.json());
       setUsersList(await usersRes.json());
       
-      // Sortujemy seanse po dacie, by najnowsze/nadchodzące były na górze
+
       const fetchedScreenings = await screeningsRes.json();
       const sortedScreenings = fetchedScreenings.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
       setScreeningsList(sortedScreenings);
@@ -142,12 +141,12 @@ const AdminPanel = () => {
       if (!res.ok) throw new Error('Błąd zapisu seansu.');
       setMessage({ text: 'Seans dodany pomyślnie!', type: 'success' });
       
-      fetchAuxiliaryData(); // ODŚWIEŻENIE BAZY W TLE ŻEBY TABELA NA DOLE ZARAZ GO WYŚWIETLIŁA
+      fetchAuxiliaryData();
     } catch (err) { setMessage({ text: err.message, type: 'error' }); } 
     finally { setIsSubmitting(false); }
   };
 
-  // --- NOWA FUNKCJA DO USUWANIA SEANSÓW ---
+
   const handleDeleteScreening = async (screeningId) => {
     const confirmDelete = window.confirm("UWAGA! Usunięcie tego seansu bezpowrotnie usunie również WSZYSTKIE bilety użytkowników do niego przypisane. Jesteś absolutnie pewien?");
     if (!confirmDelete) return;
@@ -167,7 +166,7 @@ const AdminPanel = () => {
     }
   };
 
-  // PAGINACJA USERÓW
+
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5; 
   const [userSearchQuery, setUserSearchQuery] = useState('');

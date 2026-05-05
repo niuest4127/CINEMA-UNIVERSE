@@ -10,7 +10,7 @@
 
 .skeleton-poster {
   width: 150px;
-  height: 225px; /* Proporcje kinowego plakatu */
+  height: 225px; 
   border-radius: 10px;
   background-color: #222;
   flex-shrink: 0;
@@ -53,7 +53,7 @@
   background-color: #222;
 }
 
-/* MAGIA PULSOWANIA */
+
 .animate-pulse {
   animation: pulse 1.5s ease-in-out infinite;
 }

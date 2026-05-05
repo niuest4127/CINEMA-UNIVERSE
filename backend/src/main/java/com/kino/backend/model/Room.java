@@ -10,9 +10,9 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name; // np. "Sala 1", "Sala VIP"
+    private String name;
 
-    private Integer totalSeats; // np. 50 (przyda nam się później do sprawdzania, czy są wolne miejsca)
+    private Integer totalSeats;
 
     public Room() {
     }
@@ -22,7 +22,7 @@ public class Room {
         this.totalSeats = totalSeats;
     }
 
-    // --- Gettery i Settery ---
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -2,9 +2,9 @@
   position: fixed;
   z-index: 999;
   display: flex;
-  justify-content: space-between; /* Kluczowa zmiana */
+  justify-content: space-between;
   align-items: center;
-  padding: 20px 40px; /* Nieco większy odstęp od boków */
+  padding: 20px 40px; 
   left: 0;
   top: 0;
   right: 0;
@@ -21,16 +21,13 @@
 .navbar a { text-decoration: none; color: white; transition: 0.3s; }
 .navbar a:hover { color: red; }
 
-/* === UKŁAD 3 RÓWNYCH KOLUMN NA DESKTOPIE === */
 
-/* 1. Lewa strona (Logo) */
 .nav-logo {
   flex: 1;
   display: flex;
   justify-content: flex-start;
 }
 
-/* 2. Środek (Linki) */
 .nav-links {
   flex: 1;
   display: flex;
@@ -46,7 +43,7 @@ nav h6{
 nav h6:hover{
   color: red;
 }
-/* 3. Prawa strona (Logowanie + Język) */
+
 .desktop-right-section {
   flex: 1;
   display: flex;
@@ -55,7 +52,7 @@ nav h6:hover{
   gap: 30px; 
 }
 
-/* === OGÓLNE === */
+
 
 a {
   text-decoration: none;
@@ -84,7 +81,7 @@ nav h5:hover span {
 .bar { display: block; width: 25px; height: 3px; margin: 5px auto; background-color: white; transition: all 0.3s ease-in-out; }
 .mobile-login { display: none; }
 
-/* === ZMIANA JĘZYKA === */
+
 
 .lang-switcher {
   display: flex;
@@ -117,10 +114,10 @@ nav h5:hover span {
 }
 
 .mobile-lang-container {
-  display: none; /* Ukryte na desktopie */
+  display: none; 
 }
 
-/* === WERSJA MOBILNA NAVBARU === */
+
 
 @media (min-width: 768px) {
   .lang-switcher {
@@ -172,12 +169,11 @@ nav h5:hover span {
   .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); background-color: red; }
   .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background-color: red; }
 
-  /* Ukrywamy prawą stronę desktopową na mobile */
+
   .desktop-right-section { display: none; }
   
   .mobile-login { display: block; margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; }
 
-  /* Włączamy przełącznik języka na dole menu */
   .mobile-lang-container {
     display: flex;
     justify-content: center;

@@ -1,7 +1,7 @@
-/* GŁÓWNY KONTENER */
+
 .screening-details-container {
   color: white;
-  padding: 120px 5% 80px 5%; /* Zapas na Navbar na górze */
+  padding: 120px 5% 80px 5%; 
   min-height: 85vh;
   background-color: #050505;
   font-family: "Poppins", sans-serif;
@@ -15,7 +15,7 @@
   margin-top: 150px;
 }
 
-/* PRZYCISK POWROTU */
+
 .back-btn {
   background: transparent;
   color: #888;
@@ -31,33 +31,33 @@
   color: white;
 }
 
-/* UKŁAD GŁÓWNY (Plakat + Opis) */
+
 .details-content {
   display: flex;
   gap: 50px;
   align-items: flex-start;
 }
 
-/* PLAKAT */
+
 .details-poster-wrapper {
-  flex: 0 0 25%; /* Stała szerokość plakatu na komputerach */
+  flex: 0 0 25%; 
   min-width: 250px;
 }
 
 .details-poster {
   width: 100%;
   border-radius: 15px;
-  box-shadow: 0 10px 40px rgba(255, 0, 0, 0.15); /* Delikatna kinowa poświata */
+  box-shadow: 0 10px 40px rgba(255, 0, 0, 0.15);
 }
 
-/* INFORMACJE */
+
 .details-info-wrapper {
   flex: 1;
   min-width: 300px;
 }
 
 .movie-title {
-  font-size: clamp(32px, 4vw, 56px); /* Responsywny rozmiar czcionki */
+  font-size: clamp(32px, 4vw, 56px);
   color: rgb(255, 0, 0);
   margin-bottom: 15px;
   line-height: 1.1;
@@ -114,7 +114,7 @@
   color: white;
 }
 
-/* SEKCJA INNYCH GODZIN */
+
 .other-showtimes-section {
   margin: 40px 0;
 }
@@ -150,9 +150,9 @@ text-wrap: nowrap;
 
 } */
  .cyber-btn {
-  /* Podstawowe stylowanie i kształt (pill) */
-  background-color: #0a0a0a00; /* Bardzo ciemne tło, pasujące do strony */
-  color: #ffffff; /* Neonowy czerwono-pomarańczowy */
+
+  background-color: #0a0a0a00; 
+  color: #ffffff; 
   border: 2px solid #ffffff;
   border-radius: 12px;
   padding: 48px 40px;
@@ -163,21 +163,20 @@ text-wrap: nowrap;
   letter-spacing: 2px;
   cursor: pointer;
   
-  /* Ustawienia do animacji */
+
   position: relative;
   overflow: hidden;
   transition: all .5s ease-in-out;
   
-  /* Delikatny blask w spoczynku */
+
   box-shadow: 0 0 10px rgba(255, 60, 0, 0.2), inset 0 0 10px rgba(255, 60, 0, 0.1);
     animation: red-pulse 2.5s infinite;
 }
 
-/* Efekt przy najechaniu myszką (Hover) */
 .cyber-btn:hover {
   border: 2px solid #ff0000;
-  color: #ff0000; /* Ciemny tekst dla kontrastu */
-  /* Mocniejszy, cyberpunkowy blask */
+  color: #ff0000; 
+
   box-shadow: 0 0 20px rgb(255, 0, 0), 0 0 40px rgba(255, 0, 0, 0.4);
 
 }
@@ -187,14 +186,14 @@ text-wrap: nowrap;
     box-shadow: 0 0 0 5px rgba(255, 0, 0, 0.5);
   }
   70% {
-    /* Rozchodzący się cień, który stopniowo znika (opacity idzie do 0) */
+
     box-shadow: 0 0 0 25px rgba(255, 0, 0, 0);
   }
   100% {
     box-shadow: 0 0 0 5px rgba(255, 0, 0, 0);
   }
 }
-/* Tworzenie paska światła do efektu "skanowania" */
+
 .cyber-btn::before {
   content: '';
   position: absolute;
@@ -204,10 +203,9 @@ text-wrap: nowrap;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
   transition: all 0.6s ease;
-  transform: skewX(-20deg); /* Lekkie pochylenie promienia światła */
+  transform: skewX(-20deg); 
 }
 
-/* Wyzwolenie animacji "skanowania" przy hoverze */
 .cyber-btn:hover::before {
   left: 150%;
 }
@@ -225,7 +223,7 @@ text-wrap: nowrap;
   font-style: italic;
 }
 
-/* PLACEHOLDER NA SIATKĘ MIEJSC (Do podmiany w następnym kroku) */
+
 .seat-selection-placeholder {
   border: 2px dashed #333;
   padding: 60px 20px;
@@ -243,17 +241,17 @@ text-wrap: nowrap;
   color: #444;
 }
 
-/* WERSJA MOBILNA */
+
 @media (max-width: 900px) {
   .details-content {
-    flex-direction: column; /* Plakat idzie na górę, tekst na dół */
+    flex-direction: column; 
     gap: 30px;
   }
 
   .details-poster-wrapper {
     flex: auto;
-    width: 60%; /* Plakat zajmuje 60% ekranu telefonu */
-    margin: 0 auto; /* Wyśrodkowanie plakatu */
+    width: 60%; 
+    margin: 0 auto; 
   }
 
   .screening-meta-top {

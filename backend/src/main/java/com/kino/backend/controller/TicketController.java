@@ -21,9 +21,8 @@ import java.time.LocalDateTime;
 public class TicketController {
 
     private final TicketRepository ticketRepository;
-    private final TicketService ticketService; // Dodajemy naszego "kierownika"
+    private final TicketService ticketService;
     private final PdfService pdfService;
-    // Wstrzykujemy oba narzędzia
     public TicketController(TicketRepository ticketRepository, TicketService ticketService,PdfService pdfService) {
         this.ticketRepository = ticketRepository;
         this.ticketService = ticketService;
@@ -37,35 +36,30 @@ public class TicketController {
 
     @PostMapping
     public Ticket addTicket(@RequestBody Ticket ticket) {
-        // ZAMIAST: return ticketRepository.save(ticket);
-        // UŻYWAMY NASZEGO BEZPIECZNEGO SERWISU:
         return ticketService.buyTicket(ticket);
     }
 
-    // --- NOWY ENDPOINT DLA REACTA ---
-    // Adres będzie wyglądał np. tak: /api/tickets/screening/1/taken-seats
+
     @GetMapping("/screening/{screeningId}/taken-seats")
     public List<String> getTakenSeats(@PathVariable Long screeningId) {
         return ticketService.getTakenSeatsForScreening(screeningId);
     }
-    // NOWY ENDPOINT DLA REACTA: Zwrot biletu
-    // Adres będzie wyglądał np. tak: /api/tickets/1/return
+
     @PutMapping("/{ticketId}/return")
     public Ticket returnTicket(@PathVariable Long ticketId, Authentication authentication) {
-        // authentication.getName() zwraca nam EMAIL zalogowanej w tej chwili osoby
+
         String loggedInEmail = authentication.getName();
 
-        // Sprawdzamy, czy ta osoba ma uprawnienia "ROLE_ADMIN" (Spring Security dodaje prefiks ROLE_)
+
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        // Przekazujemy te dane do kalkulatora!
         return ticketService.returnTicket(ticketId, loggedInEmail, isAdmin);
     }
-    // --- POBIERANIE BILETÓW ZALOGOWANEGO UŻYTKOWNIKA ---
+
     @GetMapping("/my")
     public List<Ticket> getMyTickets(Authentication authentication) {
-        // authentication.getName() to email zalogowanego użytkownika
+
         String userEmail = authentication.getName();
         return ticketRepository.findByUserEmailOrderByScreeningStartTimeDesc(userEmail);
     }
@@ -81,10 +75,10 @@ public class TicketController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfContent);
     }
-    // --- NOWY ENDPOINT DLA PANELU ADMINA (Pobieranie biletów danego usera) ---
+
     @GetMapping("/user/{userId}")
     public List<Ticket> getTicketsForUser(@PathVariable Long userId) {
-        // Używamy metody, którą dodaliśmy do repozytorium w poprzednim kroku
+
         return ticketRepository.findByUserId(userId);
     }
     @GetMapping("/my/active")
@@ -96,11 +90,11 @@ public class TicketController {
         String userEmail = authentication.getName();
         Pageable pageable = PageRequest.of(page, size);
 
-        // ZAMRAŻAMY CZAS NA POTRZEBY TESTÓW (Zgodnie z MOCK_TODAY w React)
-        LocalDateTime mockNow = LocalDateTime.of(2026, 4, 1, 11, 50);
+        // dotestow
+        LocalDateTime mockNow = LocalDateTime.of(2026, 3, 10, 11, 50);
 
-        // Baza użyje teraz 1 kwietnia do oceniania, czy seans jest w przyszłości
-        return ticketRepository.findMyActiveTickets(userEmail, mockNow, pageable);
+
+        return ticketRepository.findMyActiveTickets(userEmail, LocalDateTime.now(), pageable);
     }
 
     @GetMapping("/my/history")
@@ -112,11 +106,11 @@ public class TicketController {
         String userEmail = authentication.getName();
         Pageable pageable = PageRequest.of(page, size);
 
-        // ZAMRAŻAMY CZAS NA POTRZEBY TESTÓW (Zgodnie z MOCK_TODAY w React)
-        LocalDateTime mockNow = LocalDateTime.of(2026, 4, 1, 11, 50);
+        // do testow
+        LocalDateTime mockNow = LocalDateTime.of(2026, 3, 10, 11, 50);
 
-        // Baza użyje teraz 1 kwietnia do oceniania, czy seans jest w przeszłości
-        return ticketRepository.findMyHistoryTickets(userEmail, mockNow, pageable);
+
+        return ticketRepository.findMyHistoryTickets(userEmail, LocalDateTime.now(), pageable);
     }
 
 }

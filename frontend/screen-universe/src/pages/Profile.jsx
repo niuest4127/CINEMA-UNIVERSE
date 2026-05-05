@@ -2,12 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import '../components/MovieCardSkeleton.css'; // Dodany import stylów szkieletu!
+import '../components/MovieCardSkeleton.css';
 import './Profile.css';
 
 const API_URL = 'http://localhost:8080';
 
-// 1. DODANY KOMPONENT LAZY POSTER (Zastosowany z Repertuar.jsx)
 const LazyPoster = ({ src, alt, className }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -26,7 +25,7 @@ const LazyPoster = ({ src, alt, className }) => {
         src={src}
         alt={alt}
         onLoad={() => setIsLoaded(true)}
-        onError={() => setIsLoaded(true)} // Zabezpieczenie przed zepsutym linkiem
+        onError={() => setIsLoaded(true)}
         style={{
           opacity: isLoaded ? 1 : 0,
           transition: 'opacity 0.5s ease-in-out',
@@ -73,7 +72,8 @@ const Profile = () => {
   const [notification, setNotification] = useState({ text: '', type: '' });
   const [ticketToReturn, setTicketToReturn] = useState(null);
 
-  const MOCK_TODAY = new Date('2026-04-01T11:50:00');
+  // Zaktualizowana zmienna do aktualnego czasu
+  const TODAY = new Date();
   const currentLocale = i18n.language === 'pl' ? 'pl-PL' : 'en-US';
 
   const formatDateTime = (value) => {
@@ -398,7 +398,6 @@ const Profile = () => {
       </div>
 
       <div className="profile-content glass-panel">
-        {/* 2. ZASTĄPIENIE ZWYKŁEGO TEKSTU PULSUJĄCYMI SZKIELETAMI BILETÓW */}
         {ticketsLoading && activeTab !== 'settings' ? (
           <div className="tab-section">
             <h2 className="tab-title">
@@ -441,12 +440,12 @@ const Profile = () => {
                   <div className="tickets-list">
                     {activeTickets.map((ticket) => {
                       const start = formatDateTime(ticket.screening?.startTime);
+                      // Używamy uaktualnionego TODAY do sprawdzania, czy można zwrócić bilet
                       const canReturn =
-                        MOCK_TODAY <= new Date(new Date(ticket.screening?.startTime).getTime() - 30 * 60000);
+                        TODAY <= new Date(new Date(ticket.screening?.startTime).getTime() - 30 * 60000);
 
                       return (
                         <div key={ticket.id} className="ticket-card">
-                          {/* 3. UŻYCIE LAZY POSTERA */}
                           <LazyPoster
                             src={ticket.screening?.movie?.posterUrl}
                             alt="Poster"
@@ -480,7 +479,7 @@ const Profile = () => {
                               </p>
                               <p>
                                 <span className="ticket-label">{t('profile.status')}:</span>{' '}
-                                <strong>{ticket.status || 'ACTIVE'}</strong>
+                                <strong>{ticket.status || 'AKTYWNY'}</strong>
                               </p>
                             </div>
                           </div>
@@ -530,8 +529,10 @@ const Profile = () => {
                   <div className="tickets-list">
                     {historyTickets.map((ticket) => {
                       const start = formatDateTime(ticket.screening?.startTime);
-                      const isCancelled =
-                        ticket.status === 'ANULOWANY' || ticket.status === 'CANCELLED';
+                      
+                      // Explicitly definiujemy i obsługujemy stany na zaktualizowanym froncie
+                      const isCancelled = ticket.status === 'ANULOWANY' || ticket.status === 'CANCELLED';
+                      const isCompleted = ticket.status === 'ZAKOŃCZONY' || ticket.status === 'COMPLETED';
 
                       return (
                         <div
@@ -540,7 +541,6 @@ const Profile = () => {
                             isCancelled ? 'cancelled-ticket' : 'past-ticket'
                           }`}
                         >
-                          {/* 4. UŻYCIE LAZY POSTERA DLA HISTORII */}
                           <LazyPoster
                             src={ticket.screening?.movie?.posterUrl}
                             alt="Poster"
@@ -559,8 +559,9 @@ const Profile = () => {
                               {start.date} {t('profile.atTime')} {start.time}
                             </p>
 
+   
                             <span className={`status-badge ${isCancelled ? 'red-badge' : 'gray-badge'}`}>
-                              {isCancelled ? t('profile.statusCancelled') : t('profile.statusCompleted')}
+                              {isCancelled ? t('profile.statusCancelled') : (isCompleted ? t('profile.statusCompleted') : ticket.status)}
                             </span>
 
                             <div className="ticket-details-grid history-details">
